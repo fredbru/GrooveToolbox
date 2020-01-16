@@ -14,12 +14,31 @@
 import numpy as np
 
 class Groove():
-    def __init__(self, filename):
+    def __init__(self, filename, extractFeatures=True):
+        # Filename - name of groove file to load
+        # extractFeatures - if True (default), extract all features upon groove creation.
+        # Set false if you don't need all features - instead retrieve as and when you need them
+
         np.set_printoptions(precision=2)
-        if filename.endswith('.npy'): #todo:build in other input formats here
-            self.allParts = np.load(filename)
+        self.allParts, self.timingMatrix = self._loadGrooveFile(filename)
+        self.groove5Parts = self._groupGroove5KitParts()
+        self.groove3Parts = self._groupGroove3KitParts()
+
+        self.rhythmFeatures = RhythmFeatures(self.allParts, self.groove5Parts, self.groove3Parts)
+        self.microtimingFeatures = MicrotimingFeatures(self.timingMatrix)
+
+        if extractFeatures:
+            self.rhythmFeatures.getAllFeatures()
+            self.microtimingFeatures.getAllFeatures()
+
+
+    def _loadGrooveFile(self, filename):
+        # Load groove file from filename. Accept multiple different file types
+        # todo : build in midi, BFD and audio file loading (plus any other formats)
+        if filename.endswith('.npy'):
+            allParts = np.load(filename)
             try:
-                self.timingMatrix = np.load(filename[0:-4] + "-timing.npy") #currently timing matrix has extra column for index
+                timingMatrix = np.load(filename[0:-4] + "-timing.npy") #currently timing matrix has extra column for index
             except:
                 print('Need matching timing file for .npy type - named in format GrooveName-timing.npy ')
         elif filename.endswith('.bfd3grv') or filename.endswith('.bfd2pal'):
@@ -27,15 +46,7 @@ class Groove():
         elif filename.endswith('.midi'):
             print("Midi input not yet implemented")
 
-        self.groove5Parts = self._groupGroove5KitParts()
-        self.groove3Parts = self._groupGroove3KitParts()
-
-        self.rhythmFeatures = RhythmFeatures(self.allParts, self.groove5Parts, self.groove3Parts)
-        self.timingFeatures = MicrotimingFeatures(self.timingMatrix)
-
-        #
-        # self.transformationReduction = np.empty([])
-    # todo : build in midi, BFD and audio file loading (plus any other formats)
+        return allParts, timingMatrix
 
     def _groupGroove5KitParts(self):
         # Group kit parts into 5 polyphony levels
@@ -78,35 +89,92 @@ class Groove():
 
         return np.vstack([low,mid,high])
 
-    def getAllFeatures(self):
+    def calculateAllFeatures(self):
         pass
 
 class RhythmFeatures():
     def __init__(self, allParts, groove5Parts, groove3Parts):
-        pass
+        self.allParts = allParts
+        self.groove5Parts = groove5Parts
+        self.groove3Parts = groove3Parts
 
     def getAllFeatures(self):
-        # get all features. create seperate functions for feature calculations so user
+        # get all features. create separate functions for feature calculations so user
         # can calculate features individually if they would like to.
-        self.weightedSyncopation = []
-        self.polyphonicSyncopation = []
-        self.lowSyncopation = []
-        self.midSyncopation = []
-        self.highSyncopation = []
-        self.lowDensity = []
-        self.midDensity = []
-        self.highDensity = []
-        self.totalDensity = []
-        self.highness = []
-        self.highsyncness = []
-        self.autocorrelationSkew = []
-        self.autocorrelationMaxAmplitude = []
-        self.autocorrelationCentroid = []
-        self.autocorrelationHarmonicity = []
-        self.symmetry = []
+        self.getWeightedSyncopation()
+        self.getPolyphonicSyncopation()
+        self.getLowSyncopation()
+        self.getMidSyncopation()
+        self.getHighSyncopation()
+        self.getLowDensity()
+        self.getMidDensity()
+        self.getHighDensity()
+        self.getTotalDensity()
+        self.getHiness()
+        self.getHiSyncness()
+        self.getAutocorrelationSkew()
+        self.getAutocorrelationMaxAmplitude()
+        self.getAutocorrelationCentroid()
+        self.getAutocorrelationHarmonicity()
+        self.getSymmetry()
+        print('get features')
 
+    def getWeightedSyncopation(self):
         pass
 
+    def getPolyphonicSyncopation(self):
+        pass
+
+    def getSyncopation1Part(self):
+        pass
+
+    def getLowSyncopation(self):
+        pass
+
+    def getMidSyncopation(self):
+        pass
+
+    def getHighSyncopation(self):
+        pass
+
+    def getDensity1Part(self):
+        pass
+
+    def getLowDensity(self):
+        pass
+
+    def getMidDensity(self):
+        pass
+
+    def getHighDensity(self):
+        pass
+
+    def getDensity1Part(self):
+        pass
+
+    def getTotalDensity(self):
+        pass
+
+    def getHiness(self):
+        pass
+
+    def getHiSyncness(self):
+        pass
+
+    def getAutocorrelationSkew(self):
+        pass
+
+    def getAutocorrelationMaxAmplitude(self):
+        pass
+
+    def getAutocorrelationCentroid(self):
+        pass
+
+    def getAutocorrelationHarmonicity(self):
+        pass
+
+    def getSymmetry(self):
+        pass
 
 class MicrotimingFeatures():
     def __init__(self, timingMatrix):
