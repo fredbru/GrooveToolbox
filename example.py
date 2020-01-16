@@ -11,3 +11,4 @@ nameB = "Glam Get Down 7.npy"
 
 GlamGetDown5 = Groove.Groove("Glam Get Down 5.npy")
 
+print(GlamGetDown5.rhythmFeatures.autocorrelationCentroid)

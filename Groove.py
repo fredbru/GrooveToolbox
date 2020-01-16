@@ -12,7 +12,6 @@
 #     9 High tom
 
 import numpy as np
-# import microtiminganalysis
 
 class Groove():
     def __init__(self, filename):
@@ -24,13 +23,16 @@ class Groove():
             except:
                 print('Need matching timing file for .npy type - named in format GrooveName-timing.npy ')
         elif filename.endswith('.bfd3grv') or filename.endswith('.bfd2pal'):
-            print("BFD groove parsing not yet implemented")
+            print("BFD file input not yet implemented")
+        elif filename.endswith('.midi'):
+            print("Midi input not yet implemented")
 
         self.groove5Parts = self._groupGroove5KitParts()
         self.groove3Parts = self._groupGroove3KitParts()
 
-        # self.rhythmFeatures = RhythmFeatures() #need to put in matrix data
-        # self.timingFeatures = MicrotimingFeatures() # need to put in matrix data
+        self.rhythmFeatures = RhythmFeatures(self.allParts, self.groove5Parts, self.groove3Parts)
+        self.timingFeatures = MicrotimingFeatures(self.timingMatrix)
+
         #
         # self.transformationReduction = np.empty([])
     # todo : build in midi, BFD and audio file loading (plus any other formats)
@@ -57,10 +59,10 @@ class Groove():
 
         groove5Parts = np.zeros([self.allParts.shape[0],5])
         groove5Parts[:,0] = self.allParts[:,kick]
-        groove5Parts[:,1] = np.ceil(self.allParts[:,snare],1)
-        groove5Parts[:,2] = np.ceil(self.allParts[:,closedhihat] + self.allParts[:,ride],1)
-        groove5Parts[:,3] = np.ceil(self.allParts[:,openhihat] + self.allParts[:,crash] + self.allParts[:,extraCymbal],1)
-        groove5Parts[:,4] = np.ceil(self.allParts[:,lowTom] + self.allParts[:,midTom] + self.allParts[:,highTom],1)
+        groove5Parts[:,1] = self.allParts[:,snare]
+        groove5Parts[:,2] = np.clip([self.allParts[:,closedhihat] + self.allParts[:,ride]],0,1)
+        groove5Parts[:,3] = np.clip([self.allParts[:,openhihat] + self.allParts[:,crash] + self.allParts[:,extraCymbal]],0,1)
+        groove5Parts[:,4] = np.clip([self.allParts[:,lowTom] + self.allParts[:,midTom] + self.allParts[:,highTom]],0,1)
         return groove5Parts
 
     def _groupGroove3KitParts(self):
@@ -80,7 +82,12 @@ class Groove():
         pass
 
 class RhythmFeatures():
-    def __init__(self):
+    def __init__(self, allParts, groove5Parts, groove3Parts):
+        pass
+
+    def getAllFeatures(self):
+        # get all features. create seperate functions for feature calculations so user
+        # can calculate features individually if they would like to.
         self.weightedSyncopation = []
         self.polyphonicSyncopation = []
         self.lowSyncopation = []
@@ -98,14 +105,11 @@ class RhythmFeatures():
         self.autocorrelationHarmonicity = []
         self.symmetry = []
 
-    def getAllFeatures(self):
-        # get all features. create seperate functions for feature calculations so user
-        # can calculate features individually if they would like to.
         pass
 
 
 class MicrotimingFeatures():
-    def __init__(self):
+    def __init__(self, timingMatrix):
         self.swingness = []
         self.swing = []
         self.pushness = []
