@@ -14,13 +14,22 @@
 import numpy as np
 
 class Groove():
-    def __init__(self, filename, extractFeatures=True):
+    def __init__(self, filename, extractFeatures=True, velocityType="Regular"):
         # Filename - name of groove file to load
         # extractFeatures - if True (default), extract all features upon groove creation.
         # Set false if you don't need all features - instead retrieve as and when you need them
 
         np.set_printoptions(precision=2)
         self.allParts, self.timingMatrix = self._loadGrooveFile(filename)
+
+        if velocityType == "None":
+            self.allParts = np.ceil(self.allParts)
+        if velocityType == "Regular":
+            pass
+        if velocityType == "Transform":
+            self.allParts = np.power(self.allParts, 0.2)
+        print(self.allParts)
+
         self.groove5Parts = self._groupGroove5KitParts()
         self.groove3Parts = self._groupGroove3KitParts()
 
@@ -45,7 +54,6 @@ class Groove():
             print("BFD file input not yet implemented")
         elif filename.endswith('.midi'):
             print("Midi input not yet implemented")
-
         return allParts, timingMatrix
 
     def _groupGroove5KitParts(self):
@@ -94,10 +102,7 @@ class Groove():
 
 class RhythmFeatures():
     def __init__(self, allParts, groove5Parts, groove3Parts):
-        self.allParts = allParts
-        self.groove5Parts = groove5Parts
-        self.groove3Parts = groove3Parts
-
+        pass
     def getAllFeatures(self):
         # get all features. create separate functions for feature calculations so user
         # can calculate features individually if they would like to.
@@ -117,7 +122,6 @@ class RhythmFeatures():
         self.getAutocorrelationCentroid()
         self.getAutocorrelationHarmonicity()
         self.getSymmetry()
-        print('get features')
 
     def getWeightedSyncopation(self):
         pass
@@ -137,8 +141,14 @@ class RhythmFeatures():
     def getHighSyncopation(self):
         pass
 
-    def getDensity1Part(self):
-        pass
+    def _getDensity(self, part):
+        numSteps = part.size
+        numOnsets = np.count_nonzero(np.ceil(part) == 1)
+        averageVelocity = np.mean(np.nonzero(part))
+        if np.isnan(averageVelocity):
+            averageVelocity = 0.0
+        density = pow(averageVelocity, ) * float(numOnsets) / float(numSteps)
+        return density
 
     def getLowDensity(self):
         pass
