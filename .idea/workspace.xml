@@ -4,6 +4,7 @@
     <list default="true" id="9b8dbde8-48c5-418f-bc46-bc547fc60bbf" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Groove.py" afterPath="$PROJECT_DIR$/Groove.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.py" afterPath="$PROJECT_DIR$/example.py" />
     </list>
     <ignored path="GrooveToolbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="example.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="example.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="73" selection-start-line="12" selection-start-column="73" selection-end-line="12" selection-end-column="73" />
+            <state relative-caret-position="238">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding>
                 <element signature="e#235#253#0" expanded="true" />
               </folding>
@@ -35,25 +36,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Groove.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Groove.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Groove.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="986">
-              <caret line="104" column="12" selection-start-line="104" selection-start-column="12" selection-end-line="104" selection-end-column="12" />
+            <state relative-caret-position="612">
+              <caret line="235" column="12" selection-start-line="235" selection-start-column="12" selection-end-line="235" selection-end-column="12" />
               <folding>
-                <element signature="e#2288#3341#0" expanded="false" />
-                <element signature="e#3388#3747#0" expanded="false" />
+                <element signature="e#2259#3312#0" expanded="false" />
+                <element signature="e#3359#3718#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="groove.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../shared/fx/bfd/groove.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="276" column="35" selection-start-line="276" selection-start-column="35" selection-end-line="276" selection-end-column="35" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -74,8 +65,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Example.py" />
-        <option value="$PROJECT_DIR$/Groove.py" />
         <option value="$PROJECT_DIR$/example.py" />
+        <option value="$PROJECT_DIR$/Groove.py" />
       </list>
     </option>
   </component>
@@ -342,8 +333,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#2288#3341#0" expanded="false" />
-            <element signature="e#3388#3747#0" expanded="false" />
+            <element signature="e#2259#3312#0" expanded="false" />
+            <element signature="e#3359#3718#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -357,6 +348,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/example.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding>
+            <element signature="e#235#253#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../shared/fx/bfd/groove.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="328">
@@ -367,21 +368,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Groove.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="986">
-          <caret line="104" column="12" selection-start-line="104" selection-start-column="12" selection-end-line="104" selection-end-column="12" />
+        <state relative-caret-position="612">
+          <caret line="235" column="12" selection-start-line="235" selection-start-column="12" selection-end-line="235" selection-end-column="12" />
           <folding>
-            <element signature="e#2288#3341#0" expanded="false" />
-            <element signature="e#3388#3747#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="73" selection-start-line="12" selection-start-column="73" selection-end-line="12" selection-end-column="73" />
-          <folding>
-            <element signature="e#235#253#0" expanded="true" />
+            <element signature="e#2259#3312#0" expanded="false" />
+            <element signature="e#3359#3718#0" expanded="false" />
           </folding>
         </state>
       </provider>

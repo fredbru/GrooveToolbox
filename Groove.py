@@ -28,7 +28,6 @@ class Groove():
             pass
         if velocityType == "Transform":
             self.allParts = np.power(self.allParts, 0.2)
-        print(self.allParts)
 
         self.groove5Parts = self._groupGroove5KitParts()
         self.groove3Parts = self._groupGroove3KitParts()
@@ -102,7 +101,12 @@ class Groove():
 
 class RhythmFeatures():
     def __init__(self, allParts, groove5Parts, groove3Parts):
-        pass
+        self.allParts = allParts
+        self.groove5Parts = groove5Parts
+        self.groove3Parts = groove3Parts
+
+        #todo: Do I want to list names of class variables in here? So user can see them easily?
+
     def getAllFeatures(self):
         # get all features. create separate functions for feature calculations so user
         # can calculate features individually if they would like to.
@@ -141,29 +145,32 @@ class RhythmFeatures():
     def getHighSyncopation(self):
         pass
 
-    def _getDensity(self, part):
+    def getDensity(self, part):
+        # Get density of any number of kit parts/any length groove.
         numSteps = part.size
         numOnsets = np.count_nonzero(np.ceil(part) == 1)
         averageVelocity = np.mean(np.nonzero(part))
         if np.isnan(averageVelocity):
             averageVelocity = 0.0
-        density = pow(averageVelocity, ) * float(numOnsets) / float(numSteps)
+        density = averageVelocity * float(numOnsets) / float(numSteps)
         return density
 
     def getLowDensity(self):
-        pass
+        self.lowDensity = self.getDensity(self.groove3Parts[0,:])
+        return self.lowDensity
 
     def getMidDensity(self):
-        pass
+        self.midDensity = self.getDensity(self.groove3Parts[1,:])
+        return self.midDensity
 
     def getHighDensity(self):
-        pass
-
-    def getDensity1Part(self):
-        pass
+        self.highDensity = self.getDensity(self.groove3Parts[2,:])
+        return self.highDensity
 
     def getTotalDensity(self):
-        pass
+        # note this doesn't not combine parts, output value different to if you combined parts.
+        self.totalDensity = self.getDensity(self.allParts)
+        return self.totalDensity
 
     def getHiness(self):
         pass
@@ -187,14 +194,72 @@ class RhythmFeatures():
         pass
 
 class MicrotimingFeatures():
-    def __init__(self, timingMatrix):
+    def __init__(self, microTimingMatrix, tempo):
+        self.microTimingMatrix = microTimingMatrix
+        self.tempo = tempo
+
+    def getAllFeatures(self):
+        # get all microtiming features. have separate one for individual features.
         self.swingness = []
-        self.swing = []
+        self.isSwung = []
+        self.swingRatio = []
         self.pushness = []
         self.laidbackness = []
         self.ontopness = []
         self.averageTimingMatrix = np.empty([])
 
-    def getAllFeatures(self):
+    def getSwingFeatures(self):
+        swingPositions = 3, 7, 11, 15, 19, 23, 27, 31
+        timingAverage = self.getAverageTiming()
+        swingCount = 0.0
+        secondQuaverLengths = np.zeros[self.microtimingMatrix.shape[0]/4]
+        semiquaverStepLength = 60.0 / self.tempo / 4.0
+
+        j = 0
+        for i in swingPositions:
+            if timingAverage[i] < -25.0:
+                swingCount +=1
+                secondQuaverLengths[j] = semiquaverStepLength - timingAverage[i]
+            j+=1
+        shortQuaverAverageLength = np.mean(secondQuaverLengths[secondQuaverLengths!=0])
+
+        longQuaverAverageLength = (semiquaverStepLength*4.0) - shortQuaverAverageLength
+        self.swingRatio = longQuaverAverageLength / shortQuaverAverageLength
+        if np.isnan(self.swingRatio):
+            swingRatio = 1
+        self.swingness = swingCount / len(swingPositions)
+
+        if self.swingness != 0.0:
+            self.isSwung = True
+        else:
+            self.isSwung = False
+            
+        return self.isSwung, self.swingness, self.swingRatio
+
+    def getPushness(self):
         pass
-        # get all microtiming features. have separate one for individual features.
+
+    def getLaidbackness(self):
+        pass
+
+    def getOntopness(self):
+        pass
+
+    def getAverageTiming(self):
+        self.timingAverage = np.sum(np.nan_to_num(self.microTimingMatrix), axis=1)
+        self.timingAverage[timingAverage == 0] = ['nan']
+        return self.timingAverage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
