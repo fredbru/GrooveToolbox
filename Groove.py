@@ -20,31 +20,31 @@ class Groove():
         # Set false if you don't need all features - instead retrieve as and when you need them
 
         np.set_printoptions(precision=2)
-        self.allParts, self.timingMatrix = self._loadGrooveFile(filename)
+        self.groove10Parts, self.timingMatrix = self._loadGrooveFile(filename)
+        tempo = 120.0 #todo: fix how to deal with tempo
 
         if velocityType == "None":
-            self.allParts = np.ceil(self.allParts)
+            self.groove10Parts = np.ceil(self.groove10Parts)
         if velocityType == "Regular":
             pass
         if velocityType == "Transform":
-            self.allParts = np.power(self.allParts, 0.2)
+            self.groove10Parts = np.power(self.groove10Parts, 0.2)
 
         self.groove5Parts = self._groupGroove5KitParts()
         self.groove3Parts = self._groupGroove3KitParts()
 
-        self.rhythmFeatures = RhythmFeatures(self.allParts, self.groove5Parts, self.groove3Parts)
-        self.microtimingFeatures = MicrotimingFeatures(self.timingMatrix)
+        self.rhythmFeatures = RhythmFeatures(self.groove10Parts, self.groove5Parts, self.groove3Parts)
+        #self.microtimingFeatures = MicrotimingFeatures(self.timingMatrix, tempo)
 
         if extractFeatures:
             self.rhythmFeatures.getAllFeatures()
-            self.microtimingFeatures.getAllFeatures()
-
+            #self.microtimingFeatures.getAllFeatures() #todo: microtiming stuff
 
     def _loadGrooveFile(self, filename):
         # Load groove file from filename. Accept multiple different file types
         # todo : build in midi, BFD and audio file loading (plus any other formats)
         if filename.endswith('.npy'):
-            allParts = np.load(filename)
+            groove10Parts = np.load(filename)
             try:
                 timingMatrix = np.load(filename[0:-4] + "-timing.npy") #currently timing matrix has extra column for index
             except:
@@ -53,7 +53,7 @@ class Groove():
             print("BFD file input not yet implemented")
         elif filename.endswith('.midi'):
             print("Midi input not yet implemented")
-        return allParts, timingMatrix
+        return groove10Parts, timingMatrix
 
     def _groupGroove5KitParts(self):
         # Group kit parts into 5 polyphony levels
@@ -75,12 +75,12 @@ class Groove():
         midTom = 8
         highTom = 9
 
-        groove5Parts = np.zeros([self.allParts.shape[0],5])
-        groove5Parts[:,0] = self.allParts[:,kick]
-        groove5Parts[:,1] = self.allParts[:,snare]
-        groove5Parts[:,2] = np.clip([self.allParts[:,closedhihat] + self.allParts[:,ride]],0,1)
-        groove5Parts[:,3] = np.clip([self.allParts[:,openhihat] + self.allParts[:,crash] + self.allParts[:,extraCymbal]],0,1)
-        groove5Parts[:,4] = np.clip([self.allParts[:,lowTom] + self.allParts[:,midTom] + self.allParts[:,highTom]],0,1)
+        groove5Parts = np.zeros([self.groove10Parts.shape[0],5])
+        groove5Parts[:,0] = self.groove10Parts[:,kick]
+        groove5Parts[:,1] = self.groove10Parts[:,snare]
+        groove5Parts[:,2] = np.clip([self.groove10Parts[:,closedhihat] + self.groove10Parts[:,ride]],0,1)
+        groove5Parts[:,3] = np.clip([self.groove10Parts[:,openhihat] + self.groove10Parts[:,crash] + self.groove10Parts[:,extraCymbal]],0,1)
+        groove5Parts[:,4] = np.clip([self.groove10Parts[:,lowTom] + self.groove10Parts[:,midTom] + self.groove10Parts[:,highTom]],0,1)
         return groove5Parts
 
     def _groupGroove3KitParts(self):
@@ -96,20 +96,18 @@ class Groove():
 
         return np.vstack([low,mid,high])
 
-    def calculateAllFeatures(self):
-        pass
-
 class RhythmFeatures():
-    def __init__(self, allParts, groove5Parts, groove3Parts):
-        self.allParts = allParts
+    def __init__(self, groove10Parts, groove5Parts, groove3Parts):
+        self.groove10Parts = groove10Parts
         self.groove5Parts = groove5Parts
         self.groove3Parts = groove3Parts
 
         #todo: Do I want to list names of class variables in here? So user can see them easily?
 
     def getAllFeatures(self):
-        # get all features. create separate functions for feature calculations so user
+        # get all standard features. create separate functions for feature calculations so user
         # can calculate features individually if they would like to.
+
         self.getWeightedSyncopation()
         self.getPolyphonicSyncopation()
         self.getLowSyncopation()
@@ -146,30 +144,38 @@ class RhythmFeatures():
         pass
 
     def getDensity(self, part):
-        # Get density of any number of kit parts/any length groove.
-        numSteps = part.size
+        # Get density of any single kit part or part group. Main difference to total density is that you divide by
+        # number of metrical steps, instead of total number of possible onsets in the pattern
+        numSteps = part.shape[0]
         numOnsets = np.count_nonzero(np.ceil(part) == 1)
-        averageVelocity = np.mean(np.nonzero(part))
+        averageVelocity = part[part!=0.0].mean()
+
         if np.isnan(averageVelocity):
             averageVelocity = 0.0
         density = averageVelocity * float(numOnsets) / float(numSteps)
         return density
 
     def getLowDensity(self):
-        self.lowDensity = self.getDensity(self.groove3Parts[0,:])
+        self.lowDensity = self.getDensity(self.groove10Parts[:,0])
         return self.lowDensity
 
     def getMidDensity(self):
-        self.midDensity = self.getDensity(self.groove3Parts[1,:])
+        midParts = np.vstack([self.groove10Parts[:,1], self.groove10Parts[:,7], self.groove10Parts[:,8],
+                             self.groove10Parts[:,9]])
+        self.midDensity = self.getDensity(midParts)
         return self.midDensity
 
     def getHighDensity(self):
-        self.highDensity = self.getDensity(self.groove3Parts[2,:])
+        self.highDensity = self.getDensity(self.groove10Parts[:,2])
         return self.highDensity
 
     def getTotalDensity(self):
-        # note this doesn't not combine parts, output value different to if you combined parts.
-        self.totalDensity = self.getDensity(self.allParts)
+        # for 10 parts. Note values do tend to be very low for this, due to high numbers of parts meaning sparse
+        # matricies.
+        numStepsTotal = self.groove10Parts.size
+        numOnsets = np.count_nonzero(np.ceil(self.groove10Parts) == 1)
+        averageVelocity = self.groove10Parts[self.groove10Parts!=0.0].mean()
+        self.totalDensity = averageVelocity * float(numOnsets) / float(numStepsTotal)
         return self.totalDensity
 
     def getHiness(self):
@@ -194,29 +200,46 @@ class RhythmFeatures():
         pass
 
 class MicrotimingFeatures():
-    def __init__(self, microTimingMatrix, tempo):
-        self.microTimingMatrix = microTimingMatrix
+    def __init__(self, microtimingMatrix, tempo):
+        self.microtimingMatrix = microtimingMatrix
         self.tempo = tempo
+        self.getSwingInfo()
 
     def getAllFeatures(self):
         # get all microtiming features. have separate one for individual features.
-        self.swingness = []
-        self.isSwung = []
+
+        self.isSwung = self.checkIfSwung()
         self.swingRatio = []
         self.pushness = []
         self.laidbackness = []
         self.ontopness = []
         self.averageTimingMatrix = np.empty([])
 
-    def getSwingFeatures(self):
-        swingPositions = 3, 7, 11, 15, 19, 23, 27, 31
+    def checkIfSwung(self):
+
+        if self.swingness > 0.0:
+            self.isSwung = True
+        elif self.swingness == 0.0:
+            self.isSwung = False
+
+        return self.isSwung
+
+    def getSwingRatio(self):
+        pass
+
+    def getSwingInfo(self):
+        print(self.microtimingMatrix.shape[0])
+
+
+        self.swungNotePositions = list(range(self.microtimingMatrix.shape[0]))[3::4]
         timingAverage = self.getAverageTiming()
+
         swingCount = 0.0
         secondQuaverLengths = np.zeros[self.microtimingMatrix.shape[0]/4]
         semiquaverStepLength = 60.0 / self.tempo / 4.0
 
         j = 0
-        for i in swingPositions:
+        for i in self.swungNotePositions:
             if timingAverage[i] < -25.0:
                 swingCount +=1
                 secondQuaverLengths[j] = semiquaverStepLength - timingAverage[i]
@@ -226,15 +249,9 @@ class MicrotimingFeatures():
         longQuaverAverageLength = (semiquaverStepLength*4.0) - shortQuaverAverageLength
         self.swingRatio = longQuaverAverageLength / shortQuaverAverageLength
         if np.isnan(self.swingRatio):
-            swingRatio = 1
-        self.swingness = swingCount / len(swingPositions)
-
-        if self.swingness != 0.0:
-            self.isSwung = True
-        else:
-            self.isSwung = False
-            
-        return self.isSwung, self.swingness, self.swingRatio
+            self.swingRatio = 1
+        self.swingness = swingCount / len(self.swungNotePositions)
+        return
 
     def getPushness(self):
         pass
@@ -246,8 +263,8 @@ class MicrotimingFeatures():
         pass
 
     def getAverageTiming(self):
-        self.timingAverage = np.sum(np.nan_to_num(self.microTimingMatrix), axis=1)
-        self.timingAverage[timingAverage == 0] = ['nan']
+        self.timingAverage = np.sum(np.nan_to_num(self.microtimingMatrix), axis=1)
+        self.timingAverage[self.timingAverage == 0] = ['nan']
         return self.timingAverage
 
 
