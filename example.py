@@ -14,5 +14,6 @@ print(GlamGetDown5.groove10Parts)
 print(GlamGetDown5.rhythmFeatures.getLowSyncopation())
 print(GlamGetDown5.rhythmFeatures.getMidSyncopation())
 print(GlamGetDown5.rhythmFeatures.getHighSyncopation())
+print(GlamGetDown5.rhythmFeatures.getCombinedSyncopation())
 
 

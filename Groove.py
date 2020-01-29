@@ -108,7 +108,7 @@ class RhythmFeatures():
         # get all standard features. create separate functions for feature calculations so user
         # can calculate features individually if they would like to.
 
-        self.getWeightedSyncopation()
+        self.getCombinedSyncopation()
         self.getPolyphonicSyncopation()
         self.getLowSyncopation()
         self.getMidSyncopation()
@@ -125,8 +125,14 @@ class RhythmFeatures():
         self.getAutocorrelationHarmonicity()
         self.getSymmetry()
 
-    def getWeightedSyncopation(self):
-        pass
+    def getCombinedSyncopation(self):
+        # Calculate syncopation as summed across two parts.
+        self.combinedSyncopation = 0.0
+        for i in range(self.groove10Parts.shape[1]):
+            self.combinedSyncopation += self.getSyncopation1Part(self.groove10Parts[:,i])
+        return self.combinedSyncopation
+
+
 
     def getPolyphonicSyncopation(self):
         pass
