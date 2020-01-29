@@ -131,17 +131,43 @@ class RhythmFeatures():
     def getPolyphonicSyncopation(self):
         pass
 
-    def getSyncopation1Part(self):
-        pass
+    def getSyncopation1Part(self, part):
+        # Using Longuet-Higgins  and  Lee 1984 metric profile.
+        # Uses velocity if available
+        # Assuming it's a drum loop - loops round.
+        # syncopation = difference in profile weights where proceeding weight > preceeding
+        metricalProfile = [5, 1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1,
+                                   5, 1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1]
+
+        syncopation = 0.0
+        for i in range(len(part)):
+            if part[i] != 0:
+                if part[(i + 1) % 32] == 0.0 and metricalProfile[i+1] > metricalProfile[i]:
+                    syncopation = float(syncopation + (
+                    abs(metricalProfile[i+1] - metricalProfile[i]))) # * part[i]))
+
+                elif part[(i + 2) % 32] == 0.0 and metricalProfile[i+2] > metricalProfile[i]:
+                    syncopation = float(syncopation + (
+                    abs(metricalProfile[i+2] - metricalProfile[i]))) # * part[i]))
+        return syncopation
 
     def getLowSyncopation(self):
-        pass
+        self.lowSyncopation = self.getSyncopation1Part(self.groove10Parts[:,0])
+        return self.lowSyncopation
 
     def getMidSyncopation(self):
-        pass
+        # sum parts here
+        midParts = np.clip(self.groove10Parts[:,1] + self.groove10Parts[:,7] + self.groove10Parts[:,8] +
+                             self.groove10Parts[:,9],0,1)
+        self.midSyncopation = self.getSyncopation1Part(midParts)
+        return self.midSyncopation
 
     def getHighSyncopation(self):
-        pass
+        # sum parts here
+        highParts = np.clip(self.groove10Parts[:,2] + self.groove10Parts[:,3] + self.groove10Parts[:,4] +
+                            self.groove10Parts[:, 5] + self.groove10Parts[:,6],0,1)
+        self.highSyncopation = self.getSyncopation1Part(highParts)
+        return self.highSyncopation
 
     def getDensity(self, part):
         # Get density of any single kit part or part group. Main difference to total density is that you divide by
@@ -166,6 +192,9 @@ class RhythmFeatures():
         return self.midDensity
 
     def getHighDensity(self):
+        highParts = np.vstack([self.groove10Parts[:,2], self.groove10Parts[:,3], self.groove10Parts[:,4],
+                             self.groove10Parts[:,5],self.groove10Parts[:,6]])
+
         self.highDensity = self.getDensity(self.groove10Parts[:,2])
         return self.highDensity
 
