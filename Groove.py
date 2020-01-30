@@ -94,13 +94,16 @@ class Groove():
         mid = np.nansum(np.dstack((snare, toms)), 2)
         high = np.nansum(np.dstack((closed, open)), 2)
 
-        return np.vstack([low,mid,high])
+        return np.vstack([low,mid[0,:],high[0,:]]).T
 
 class RhythmFeatures():
     def __init__(self, groove10Parts, groove5Parts, groove3Parts):
         self.groove10Parts = groove10Parts
         self.groove5Parts = groove5Parts
         self.groove3Parts = groove3Parts
+        print(self.groove3Parts)
+        print(self.groove5Parts)
+        print(self.groove10Parts)
 
         #todo: Do I want to list names of class variables in here? So user can see them easily?
 
@@ -132,9 +135,26 @@ class RhythmFeatures():
             self.combinedSyncopation += self.getSyncopation1Part(self.groove10Parts[:,i])
         return self.combinedSyncopation
 
-
-
     def getPolyphonicSyncopation(self):
+        # Calculate syncopation using Witek combined drum pattern syncopation distance
+        salienceProfile = [0, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3,
+                           0, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3]
+        # binaryA = np.ceil(A)
+        #
+        # lowA, midA, highA = self.splitKitParts3Ways(binaryA)
+        #
+        # totalSyncopationA = 0
+        # totalSyncopationB = 0
+        #
+        # high = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+        #         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+        #
+        # for i in range(len(lowA)):
+        #     kickSync = findKickSync(lowA, midA, highA, i, salienceProfile)
+        #     snareSync = findSnareSync(lowA, midA, highA, i, salienceProfile)
+        #     totalSyncopationA += kickSync * lowA[i]
+        #     totalSyncopationA += snareSync * midA[i]
+
         pass
 
     def getSyncopation1Part(self, part):
