@@ -83,7 +83,7 @@ class Groove():
         groove5Parts[:,4] = np.clip([self.groove10Parts[:,lowTom] + self.groove10Parts[:,midTom] + self.groove10Parts[:,highTom]],0,1)
         return groove5Parts
 
-    def _groupGroove3KitParts(self):
+    def _groupGroove3KitParts(self): #todo: check this is working correctly for toms (same with 5 part function)
         kick = self.groove5Parts[:, 0]
         snare = self.groove5Parts[:, 1]
         closed = self.groove5Parts[:, 2]
@@ -101,9 +101,6 @@ class RhythmFeatures():
         self.groove10Parts = groove10Parts
         self.groove5Parts = groove5Parts
         self.groove3Parts = groove3Parts
-        print(self.groove3Parts)
-        print(self.groove5Parts)
-        print(self.groove10Parts)
 
         #todo: Do I want to list names of class variables in here? So user can see them easily?
 
@@ -129,7 +126,7 @@ class RhythmFeatures():
         self.getSymmetry()
 
     def getCombinedSyncopation(self):
-        # Calculate syncopation as summed across two parts.
+        # Calculate syncopation as summed across all kit parts.
         self.combinedSyncopation = 0.0
         for i in range(self.groove10Parts.shape[1]):
             self.combinedSyncopation += self.getSyncopation1Part(self.groove10Parts[:,i])
@@ -137,25 +134,97 @@ class RhythmFeatures():
 
     def getPolyphonicSyncopation(self):
         # Calculate syncopation using Witek combined drum pattern syncopation distance
+        # Only look semiquaver and quaver steps ahead.
+
         salienceProfile = [0, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3,
                            0, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3]
-        # binaryA = np.ceil(A)
-        #
-        # lowA, midA, highA = self.splitKitParts3Ways(binaryA)
-        #
-        # totalSyncopationA = 0
-        # totalSyncopationB = 0
-        #
-        # high = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-        #         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-        #
-        # for i in range(len(lowA)):
-        #     kickSync = findKickSync(lowA, midA, highA, i, salienceProfile)
-        #     snareSync = findSnareSync(lowA, midA, highA, i, salienceProfile)
-        #     totalSyncopationA += kickSync * lowA[i]
-        #     totalSyncopationA += snareSync * midA[i]
 
-        pass
+        low = self.groove3Parts[:,0]
+        mid = self.groove3Parts[:,1]
+        high = self.groove3Parts[:,2]
+
+        totalSyncopation = 0
+
+        for i in range(len(low)):
+            kickSync = self._getKickSync(low, mid, high, i, salienceProfile)
+            snareSync = self._getSnareSync(low, mid, high, i, salienceProfile)
+            totalSyncopation += kickSync * low[i]
+            totalSyncopation += snareSync * mid[i]
+
+        return totalSyncopation
+
+    def _getKickSync(self, low, mid, high, i, salienceProfile):
+        # find instances  when kick syncopates against hi hat/snare on the beat. looking for kick proceeded by another hit
+        # on a weaker metrical position
+        kickSync = 0
+        k = 0
+        nextHit = ""
+        if low[i] == 1 and low[(i + 1) % 32] !=1 and low[(i+2) % 32] != 1:
+            for j in i + 1, i + 2: #look one and two steps ahead only - account for semiquaver and quaver sync
+                if mid[(j % 32)] == 1 and high[(j % 32)] != 1:
+                    nextHit = "Mid"
+                    k = j % 32
+                    break
+                elif high[(j % 32)] == 1 and mid[(j % 32)] != 1:
+                    nextHit = "High"
+                    k = j % 32
+                    break
+                elif high[(j % 32)] == 1 and mid[(j % 32)] == 1:
+                    nextHit = "MidAndHigh"
+                    k = j % 32
+                    break
+            if nextHit == "MidAndHigh":
+                if salienceProfile[k] >= salienceProfile[i]:  # if hi hat is on a stronger beat - syncopation
+                    difference = salienceProfile[k] - salienceProfile[i]
+                    kickSync = difference + 2
+            elif nextHit == "Mid":
+                if salienceProfile[k] >= salienceProfile[i]:  # if hi hat is on a stronger beat - syncopation
+                    difference = salienceProfile[k] - salienceProfile[i]
+                    kickSync = difference + 2
+            elif nextHit == "High":
+                if salienceProfile[k] >= salienceProfile[i]:
+                    difference = salienceProfile[k] - salienceProfile[i]
+                    kickSync = difference + 5
+        if kickSync != 0:
+            print("kick sync", kickSync)
+        return kickSync
+
+    def _getSnareSync(self, low, mid, high, i, salienceProfile):
+        # find instances  when snare syncopates against hi hat/kick on the beat
+        # S = n - ndi + I
+        snareSync = 0
+        nextHit = ""
+        k = 0
+        if mid[i] == 1 and mid[(i + 1) % 32] !=1 and mid[(i+2) % 32] != 1:
+            for j in i + 1, i + 2: #look one and 2 steps ahead only
+                if low[(j % 32)] == 1 and high[(j % 32)] != 1:
+                    nextHit = "Low"
+                    k = j % 32
+                    break
+                elif high[(j % 32)] == 1 and low[(j % 32)] != 1:
+                    nextHit = "High"
+                    k = j % 32
+                    break
+                elif high[(j % 32)] == 1 and low[(j % 32)] == 1:
+                    nextHit = "LowAndHigh"
+                    k = j % 32
+                    break
+            if nextHit == "LowAndHigh":
+                if salienceProfile[k] >= salienceProfile[i]:
+                    difference = salienceProfile[k] - salienceProfile[i]
+                    snareSync = difference + 1  # may need to make this back to 1?)
+            elif nextHit == "Low":
+                if salienceProfile[k] >= salienceProfile[i]:
+                    difference = salienceProfile[k] - salienceProfile[i]
+                    snareSync = difference + 1
+            elif nextHit == "High":
+                if salienceProfile[k] >= salienceProfile[i]:  # if hi hat is on a stronger beat - syncopation
+                    difference = salienceProfile[k] - salienceProfile[i]
+                    snareSync = difference + 5
+        if snareSync != 0:
+            print("snare sync", snareSync)
+
+        return snareSync
 
     def getSyncopation1Part(self, part):
         # Using Longuet-Higgins  and  Lee 1984 metric profile.
@@ -168,13 +237,13 @@ class RhythmFeatures():
         syncopation = 0.0
         for i in range(len(part)):
             if part[i] != 0:
-                if part[(i + 1) % 32] == 0.0 and metricalProfile[i+1] > metricalProfile[i]:
+                if part[(i + 1) % 32] == 0.0 and metricalProfile[(i + 1) % 32] > metricalProfile[i]:
                     syncopation = float(syncopation + (
-                    abs(metricalProfile[i+1] - metricalProfile[i]))) # * part[i]))
+                    abs(metricalProfile[(i + 1) % 32] - metricalProfile[i]))) # * part[i]))
 
-                elif part[(i + 2) % 32] == 0.0 and metricalProfile[i+2] > metricalProfile[i]:
+                elif part[(i + 2) % 32] == 0.0 and metricalProfile[(i + 2) % 32] > metricalProfile[i]:
                     syncopation = float(syncopation + (
-                    abs(metricalProfile[i+2] - metricalProfile[i]))) # * part[i]))
+                    abs(metricalProfile[(i + 2) % 32] - metricalProfile[i]))) # * part[i]))
         return syncopation
 
     def getLowSyncopation(self):
