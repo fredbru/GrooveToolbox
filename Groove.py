@@ -173,6 +173,10 @@ class RhythmFeatures():
                     nextHit = "MidAndHigh"
                     k = j % 32
                     break
+                # if both next two are 0 - next hit == rest. get level of the higher level rest
+            if mid[(i+1)%32] + mid[(i+2)%32] == 0.0 and high[(i+1)%32] and [(i+2)%32] == 0.0:
+                nextHit = "None"
+
             if nextHit == "MidAndHigh":
                 if salienceProfile[k] >= salienceProfile[i]:  # if hi hat is on a stronger beat - syncopation
                     difference = salienceProfile[k] - salienceProfile[i]
@@ -185,6 +189,11 @@ class RhythmFeatures():
                 if salienceProfile[k] >= salienceProfile[i]:
                     difference = salienceProfile[k] - salienceProfile[i]
                     kickSync = difference + 5
+            elif nextHit == "None":
+                if salienceProfile[k] > salienceProfile[i]:
+                    difference = max(salienceProfile[(i + 1) % 32], salienceProfile[(i + 2) % 32]) - salienceProfile[i]
+                    kickSync = difference + 6 # if rest on a stronger beat - one stream sync, high sync value
+                    print(nextHit)
         if kickSync != 0:
             print("kick sync", kickSync)
         return kickSync
@@ -209,6 +218,9 @@ class RhythmFeatures():
                     nextHit = "LowAndHigh"
                     k = j % 32
                     break
+            if low[(i+1)%32] + low[(i+2)%32] == 0.0 and high[(i+1)%32] and [(i+2)%32] == 0.0:
+                nextHit = "None"
+
             if nextHit == "LowAndHigh":
                 if salienceProfile[k] >= salienceProfile[i]:
                     difference = salienceProfile[k] - salienceProfile[i]
@@ -221,9 +233,11 @@ class RhythmFeatures():
                 if salienceProfile[k] >= salienceProfile[i]:  # if hi hat is on a stronger beat - syncopation
                     difference = salienceProfile[k] - salienceProfile[i]
                     snareSync = difference + 5
-        if snareSync != 0:
-            print("snare sync", snareSync)
-
+            elif nextHit == "None":
+                if salienceProfile[k] > salienceProfile[i]:
+                    difference = max(salienceProfile[(i + 1) % 32], salienceProfile[(i + 2) % 32]) - salienceProfile[i]
+                    snareSync = difference + 6 # if rest on a stronger beat - one stream sync, high sync value
+                    print(nextHit)
         return snareSync
 
     def getSyncopation1Part(self, part):
