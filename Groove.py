@@ -123,7 +123,7 @@ class RhythmFeatures():
         self.getAutocorrelationMaxAmplitude()
         self.getAutocorrelationCentroid()
         self.getAutocorrelationHarmonicity()
-        self.getSymmetry()
+        self.getTotalSymmetry()
 
     def getCombinedSyncopation(self):
         # Calculate syncopation as summed across all kit parts.
@@ -174,7 +174,7 @@ class RhythmFeatures():
                     k = j % 32
                     break
                 # if both next two are 0 - next hit == rest. get level of the higher level rest
-            if mid[(i+1)%32] + mid[(i+2)%32] == 0.0 and high[(i+1)%32] and [(i+2)%32] == 0.0:
+            if mid[(i+1)%32] + mid[(i+2)%32] == 0.0 and high[(i+1)%32] + [(i+2)%32] == 0.0:
                 nextHit = "None"
 
             if nextHit == "MidAndHigh":
@@ -193,9 +193,6 @@ class RhythmFeatures():
                 if salienceProfile[k] > salienceProfile[i]:
                     difference = max(salienceProfile[(i + 1) % 32], salienceProfile[(i + 2) % 32]) - salienceProfile[i]
                     kickSync = difference + 6 # if rest on a stronger beat - one stream sync, high sync value
-                    print(nextHit)
-        if kickSync != 0:
-            print("kick sync", kickSync)
         return kickSync
 
     def _getSnareSync(self, low, mid, high, i, salienceProfile):
@@ -218,7 +215,7 @@ class RhythmFeatures():
                     nextHit = "LowAndHigh"
                     k = j % 32
                     break
-            if low[(i+1)%32] + low[(i+2)%32] == 0.0 and high[(i+1)%32] and [(i+2)%32] == 0.0:
+            if low[(i+1)%32] + low[(i+2)%32] == 0.0 and high[(i+1)%32] + [(i+2)%32] == 0.0:
                 nextHit = "None"
 
             if nextHit == "LowAndHigh":
@@ -237,7 +234,6 @@ class RhythmFeatures():
                 if salienceProfile[k] > salienceProfile[i]:
                     difference = max(salienceProfile[(i + 1) % 32], salienceProfile[(i + 2) % 32]) - salienceProfile[i]
                     snareSync = difference + 6 # if rest on a stronger beat - one stream sync, high sync value
-                    print(nextHit)
         return snareSync
 
     def getSyncopation1Part(self, part):
@@ -334,8 +330,23 @@ class RhythmFeatures():
     def getAutocorrelationHarmonicity(self):
         pass
 
-    def getSymmetry(self):
-        pass
+    def _getSymmetry(self, part):
+        # Calculate symmetry for any number of parts.
+        # Defined as the the number of onsets that appear in the same positions in the first and second halves
+        # of the pattern, divided by the total number of onsets in the pattern. As perfectly symmetricl pattner
+        # would have a symmetry of 1.0
+        symmetryCount = 0.0
+        part1,part2 = np.split(part,2)
+        for i in range(part1.shape[0]):
+            for j in range(part1.shape[1]):
+                if part1[i,j] != 0.0 and part2[i,j] != 0.0:
+                    symmetryCount += (1.0 - abs(part1[i,j] - part2[i,j])) # symmetry is
+        symmetry = symmetryCount*2.0 / np.count_nonzero(part)
+        return symmetry
+
+    def getTotalSymmetry(self):
+        self.totalSymmetry = self._getSymmetry(self.groove10Parts)
+        return self.totalSymmetry
 
 class MicrotimingFeatures():
     def __init__(self, microtimingMatrix, tempo):

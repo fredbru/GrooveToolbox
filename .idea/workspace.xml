@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b8dbde8-48c5-418f-bc46-bc547fc60bbf" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Groove.py" afterPath="$PROJECT_DIR$/Groove.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.py" afterPath="$PROJECT_DIR$/example.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/syncopation testing bits" afterPath="$PROJECT_DIR$/syncopation testing bits" />
     </list>
     <ignored path="GrooveToolbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="example.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="example.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/example.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+            <state relative-caret-position="272">
+              <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
               <folding>
                 <element signature="e#235#253#0" expanded="true" />
               </folding>
@@ -35,11 +37,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Groove.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Groove.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Groove.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="668">
-              <caret line="239" column="34" selection-start-line="239" selection-start-column="34" selection-end-line="239" selection-end-column="34" />
+            <state relative-caret-position="297">
+              <caret line="52" column="17" selection-start-line="52" selection-start-column="12" selection-end-line="52" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -48,8 +50,8 @@
       <file leaf-file-name="Get-All-Similarity.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../MusicSOM/Get-All-Similarity.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="303" column="0" selection-start-line="197" selection-start-column="0" selection-end-line="303" selection-end-column="0" />
+            <state relative-caret-position="378">
+              <caret line="434" column="23" selection-start-line="434" selection-start-column="23" selection-end-line="434" selection-end-column="23" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#5950#7486#0" expanded="false" />
@@ -64,7 +66,7 @@
       <file leaf-file-name="Microtiming-Feature-Testing.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Microtiming-Feature-Testing/Microtiming-Feature-Testing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1581">
+            <state relative-caret-position="17">
               <caret line="18" column="11" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="11" />
               <folding />
             </state>
@@ -326,6 +328,16 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/example.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding>
+            <element signature="e#235#253#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="16" column="45" selection-start-line="16" selection-start-column="45" selection-end-line="16" selection-end-column="45" />
           <folding>
@@ -570,7 +582,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../Microtiming-Feature-Testing/Microtiming-Feature-Testing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1581">
+        <state relative-caret-position="17">
           <caret line="18" column="11" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="11" />
           <folding />
         </state>
@@ -578,8 +590,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../MusicSOM/Get-All-Similarity.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="303" column="0" selection-start-line="197" selection-start-column="0" selection-end-line="303" selection-end-column="0" />
+        <state relative-caret-position="378">
+          <caret line="434" column="23" selection-start-line="434" selection-start-column="23" selection-end-line="434" selection-end-column="23" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
             <element signature="e#5950#7486#0" expanded="false" />
@@ -590,21 +602,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example.py">
+    <entry file="file://$PROJECT_DIR$/Groove.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding>
-            <element signature="e#235#253#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="297">
+          <caret line="52" column="17" selection-start-line="52" selection-start-column="12" selection-end-line="52" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Groove.py">
+    <entry file="file://$PROJECT_DIR$/example.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="668">
-          <caret line="239" column="34" selection-start-line="239" selection-start-column="34" selection-end-line="239" selection-end-column="34" />
-          <folding />
+        <state relative-caret-position="272">
+          <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
+          <folding>
+            <element signature="e#235#253#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
