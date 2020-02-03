@@ -12,6 +12,11 @@
 #     9 High tom
 
 import numpy as np
+from pandas import Series
+from pandas.plotting import autocorrelation_plot
+import matplotlib.pyplot as plt
+from scipy import stats
+
 
 class Groove():
     def __init__(self, filename, extractFeatures=True, velocityType="Regular"):
@@ -101,6 +106,7 @@ class RhythmFeatures():
         self.groove10Parts = groove10Parts
         self.groove5Parts = groove5Parts
         self.groove3Parts = groove3Parts
+        self.totalAutocorrelationCurve =  self.getTotalAutocorrelationCurve()
 
         #todo: Do I want to list names of class variables in here? So user can see them easily?
 
@@ -192,7 +198,7 @@ class RhythmFeatures():
             elif nextHit == "None":
                 if salienceProfile[k] > salienceProfile[i]:
                     difference = max(salienceProfile[(i + 1) % 32], salienceProfile[(i + 2) % 32]) - salienceProfile[i]
-                    kickSync = difference + 6 # if rest on a stronger beat - one stream sync, high sync value
+                    kickSync = difference + 6 # if rest on a stronger beat - one stream sync, high sync valuef
         return kickSync
 
     def _getSnareSync(self, low, mid, high, i, salienceProfile):
@@ -318,11 +324,35 @@ class RhythmFeatures():
     def getHiSyncness(self):
         pass
 
+    def _getAutocorrelationCurve(self, part):
+        plt.figure()
+        ax = autocorrelation_plot(part)
+        autocorrelation = ax.lines[5].get_data()[1]
+        plt.plot(range(1, self.groove10Parts.shape[0]+1),
+                 autocorrelation)  # plots from 1 to 32 inclusive - autocorrelation starts from 1 not 0 - 1-32
+        # plt.show()
+        plt.cla()
+        plt.clf()
+        plt.close()
+        return np.nan_to_num(autocorrelation)
+
+    def getTotalAutocorrelationCurve(self):
+        # Get autocorrelation curve for all parts summed.
+        self.totalAutocorrelationCurve = 0.0
+        for i in range(self.groove10Parts.shape[1]):
+            self.totalAutocorrelationCurve += self._getAutocorrelationCurve(self.groove10Parts[:,i])
+        ax = autocorrelation_plot(self.totalAutocorrelationCurve)
+        plt.plot(range(1,33),self.totalAutocorrelationCurve)
+        plt.show()
+        return self.totalAutocorrelationCurve
+
     def getAutocorrelationSkew(self):
-        pass
+        self.autocorrelationSkew = stats.skew(self.totalAutocorrelationCurve)
+        return self.autocorrelationSkew
 
     def getAutocorrelationMaxAmplitude(self):
-        pass
+        self.autocorrelationMaxAmplitude = self.totalAutocorrelationCurve.max()
+        return self.autocorrelationMaxAmplitude
 
     def getAutocorrelationCentroid(self):
         pass
