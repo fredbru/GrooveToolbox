@@ -6,6 +6,11 @@
 import numpy as np
 import Groove
 
+#timing = np.load("Trash Metal CH2 a-timing.npy")
+#print(timing.shape)
+#print(timing[:,1:])
+#np.save("Trash Metal CH2 a-timing.npy", timing[:,1:])
+
 nameA = "Glam Get Down 5.npy"
 nameB = "Glam Get Down 7.npy"
 
@@ -16,5 +21,5 @@ GlamGetDown5 = Groove.Groove("Glam Get Down 7.npy", velocityType="None")
 # print(GlamGetDown5.rhythmFeatures.getHighSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getPolyphonicSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getTotalSymmetry())
-print(GlamGetDown5.rhythmFeatures.getAutocorrelationSkew())
 
+print(GlamGetDown5.microtimingFeatures.swingRatio)

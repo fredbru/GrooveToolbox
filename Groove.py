@@ -38,12 +38,12 @@ class Groove():
         self.groove5Parts = self._groupGroove5KitParts()
         self.groove3Parts = self._groupGroove3KitParts()
 
-        self.rhythmFeatures = RhythmFeatures(self.groove10Parts, self.groove5Parts, self.groove3Parts)
-        #self.microtimingFeatures = MicrotimingFeatures(self.timingMatrix, tempo)
+        #self.rhythmFeatures = RhythmFeatures(self.groove10Parts, self.groove5Parts, self.groove3Parts)
+        self.microtimingFeatures = MicrotimingFeatures(self.timingMatrix, tempo)
 
         if extractFeatures:
-            self.rhythmFeatures.getAllFeatures()
-            #self.microtimingFeatures.getAllFeatures() #todo: microtiming stuff
+            #self.rhythmFeatures.getAllFeatures()
+            self.microtimingFeatures.getAllFeatures() #todo: microtiming stuff
 
     def _loadGrooveFile(self, filename):
         # Load groove file from filename. Accept multiple different file types
@@ -343,7 +343,6 @@ class RhythmFeatures():
             self.totalAutocorrelationCurve += self._getAutocorrelationCurve(self.groove10Parts[:,i])
         ax = autocorrelation_plot(self.totalAutocorrelationCurve)
         plt.plot(range(1,33),self.totalAutocorrelationCurve)
-        plt.show()
         return self.totalAutocorrelationCurve
 
     def getAutocorrelationSkew(self):
@@ -381,18 +380,22 @@ class RhythmFeatures():
 class MicrotimingFeatures():
     def __init__(self, microtimingMatrix, tempo):
         self.microtimingMatrix = microtimingMatrix
+
         self.tempo = tempo
-        self.getSwingInfo()
+        self.averageTimingMatrix = self.getAverageTimingDeviation()
+        self._getSwingInfo()
+
 
     def getAllFeatures(self):
         # get all microtiming features. have separate one for individual features.
+        # need to decide how to deal with this when most of the features are calculated automatically
 
         self.isSwung = self.checkIfSwung()
-        self.swingRatio = []
-        self.pushness = []
-        self.laidbackness = []
-        self.ontopness = []
-        self.averageTimingMatrix = np.empty([])
+        self._getMicrotimingEventProfile1Bar()
+        # self.swingRatio = []
+        # self.pushness = []
+        # self.laidbackness = []
+        # self.ontopness = []
 
     def checkIfSwung(self):
 
@@ -404,33 +407,88 @@ class MicrotimingFeatures():
         return self.isSwung
 
     def getSwingRatio(self):
-        pass
+        return self.swingRatio
 
-    def getSwingInfo(self):
-        print(self.microtimingMatrix.shape[0])
+    def getSwingness(self):
+        return self.swingness
 
-
-        self.swungNotePositions = list(range(self.microtimingMatrix.shape[0]))[3::4]
-        timingAverage = self.getAverageTiming()
+    def _getSwingInfo(self):
+        swungNotePositions = list(range(self.averageTimingMatrix.shape[0]))[3::4]
 
         swingCount = 0.0
-        secondQuaverLengths = np.zeros[self.microtimingMatrix.shape[0]/4]
+        secondQuaverLengths = np.zeros([self.averageTimingMatrix.shape[0]/4])
         semiquaverStepLength = 60.0 / self.tempo / 4.0
 
         j = 0
-        for i in self.swungNotePositions:
-            if timingAverage[i] < -25.0:
+        for i in swungNotePositions:
+            if self.averageTimingMatrix[i] < -25.0:
                 swingCount +=1
-                secondQuaverLengths[j] = semiquaverStepLength - timingAverage[i]
+                secondQuaverLengths[j] = semiquaverStepLength - self.averageTimingMatrix[i]
             j+=1
-        shortQuaverAverageLength = np.mean(secondQuaverLengths[secondQuaverLengths!=0])
+
+        if np.count_nonzero(secondQuaverLengths) == 0:
+            shortQuaverAverageLength = semiquaverStepLength * 2.0
+        else:
+            shortQuaverAverageLength = np.mean(secondQuaverLengths[secondQuaverLengths != 0])
 
         longQuaverAverageLength = (semiquaverStepLength*4.0) - shortQuaverAverageLength
         self.swingRatio = longQuaverAverageLength / shortQuaverAverageLength
         if np.isnan(self.swingRatio):
             self.swingRatio = 1
-        self.swingness = swingCount / len(self.swungNotePositions)
-        return
+        self.swingness = swingCount / len(swungNotePositions)
+
+    def _getMicrotimingEventProfile1Bar(self):
+        # Get profile of timing events for use in pushness/laidbackness/ontopness features
+        microtimingToGridProfile = np.zeros([8])
+        microtimingToCymbalProfile = np.zeros([8])
+        threshold = 15.0
+        kickTiming1 = self.microtimingMatrix[0, 0]
+        hihatTiming1 = self.microtimingMatrix[0, 2]
+        snareTiming2 = self.microtimingMatrix[4, 1]
+        hihatTiming2 = self.microtimingMatrix[4, 2]
+        kickTiming3 = self.microtimingMatrix[8, 0]
+        hihatTiming3 = self.microtimingMatrix[8, 2]
+        snareTiming4 = self.microtimingMatrix[12, 1]
+        hihatTiming4 = self.microtimingMatrix[12, 2]
+
+        if kickTiming1 > threshold or hihatTiming1 > threshold:
+            microtimingToGridProfile[0] = 1
+        if kickTiming1 < -threshold or hihatTiming1 < -threshold:
+            microtimingToGridProfile[1] = 1
+        if snareTiming2 > threshold or hihatTiming2 > threshold:
+            microtimingToGridProfile[2] = 1
+        if snareTiming2 < -threshold or hihatTiming2 < -threshold:
+            microtimingToGridProfile[3] = 1
+
+        if kickTiming3 > threshold or hihatTiming3 > threshold:
+            microtimingToGridProfile[4] = 1
+        if kickTiming3 < -threshold or hihatTiming3 < -threshold:
+            microtimingToGridProfile[5] = 1
+        if snareTiming4 > threshold or hihatTiming4 > threshold:
+            microtimingToGridProfile[6] = 1
+        if snareTiming4 < -threshold or hihatTiming4 < -threshold:
+            microtimingToGridProfile[7] = 1
+
+        if kickTiming1 > hihatTiming1 + threshold:
+            microtimingToCymbalProfile[0] = 1
+        if kickTiming1 < hihatTiming1 - threshold:
+            microtimingToCymbalProfile[1] = 1
+        if snareTiming2 > hihatTiming2 + threshold:
+            microtimingToCymbalProfile[2] = 1
+        if snareTiming2 < hihatTiming2 - threshold:
+            microtimingToCymbalProfile[3] = 1
+
+        if kickTiming3 > hihatTiming3 + threshold:
+            microtimingToCymbalProfile[4] = 1
+        if kickTiming3 < hihatTiming3 - threshold:
+            microtimingToCymbalProfile[5] = 1
+        if snareTiming4 > hihatTiming4 + threshold:
+            microtimingToCymbalProfile[6] = 1
+        if snareTiming4 < hihatTiming4 - threshold:
+            microtimingToCymbalProfile[7] = 1
+
+        self.microtimingEventProfile = np.hstack([microtimingToGridProfile,microtimingToCymbalProfile])
+        print(self.microtimingEventProfile)
 
     def getPushness(self):
         pass
@@ -441,10 +499,24 @@ class MicrotimingFeatures():
     def getOntopness(self):
         pass
 
-    def getAverageTiming(self):
-        self.timingAverage = np.sum(np.nan_to_num(self.microtimingMatrix), axis=1)
-        self.timingAverage[self.timingAverage == 0] = ['nan']
-        return self.timingAverage
+    def getAverageTimingDeviation(self):
+        #self.averageTimingMatrix = np.sum(np.nan_to_num(self.microtimingMatrix), axis=1)
+        self.averageTimingMatrix = np.zeros([self.microtimingMatrix.shape[0]])
+        for i in range(self.microtimingMatrix.shape[0]):
+            rowSum = 0.0
+            hitCount = 0.0
+            rowIsEmpty = np.all(np.isnan(self.microtimingMatrix[i,:]))
+            if rowIsEmpty:
+                self.averageTimingMatrix[i] = np.nan
+            else:
+                for j in range(self.microtimingMatrix.shape[1]):
+                    if np.isnan(self.microtimingMatrix[i,j]):
+                        pass
+                    else:
+                        rowSum += self.microtimingMatrix[i,j]
+                        hitCount += 1.0
+                self.averageTimingMatrix[i] = rowSum / hitCount
+        return self.averageTimingMatrix
 
 
 
