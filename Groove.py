@@ -16,6 +16,7 @@ from pandas import Series
 from pandas.plotting import autocorrelation_plot
 import matplotlib.pyplot as plt
 from scipy import stats
+from LoadGrooveFromBFDPalette import *
 
 class Groove():
     def __init__(self, filename, extractFeatures=True, velocityType="Regular"):
@@ -24,8 +25,7 @@ class Groove():
         # Set false if you don't need all features - instead retrieve as and when you need them
 
         np.set_printoptions(precision=2)
-        self.groove10Parts, self.timingMatrix = self._loadGrooveFile(filename)
-        tempo = 120.0 #todo: fix how to deal with tempo
+        self.groove10Parts, self.timingMatrix, tempo = self._loadGrooveFile(filename)
 
         if velocityType == "None":
             self.groove10Parts = np.ceil(self.groove10Parts)
@@ -49,15 +49,16 @@ class Groove():
         # todo : build in midi, BFD and audio file loading (plus any other formats)
         if filename.endswith('.npy'):
             groove10Parts = np.load(filename)
+            tempo = 120.0 #todo: fix dealing with tempo for numpy files
             try:
                 timingMatrix = np.load(filename[0:-4] + "-timing.npy") #currently timing matrix has extra column for index
             except:
                 print('Need matching timing file for .npy type - named in format GrooveName-timing.npy ')
-        elif filename.endswith('.bfd3grv') or filename.endswith('.bfd2pal'):
-            print("BFD file input not yet implemented")
+        elif filename.endswith('.bfd3pal') or filename.endswith('.bfd2pal'):
+            groove10Parts, timingMatrix, tempo = getGrooveFromBFDPalette(filename)
         elif filename.endswith('.midi'):
             print("Midi input not yet implemented")
-        return groove10Parts, timingMatrix
+        return groove10Parts, timingMatrix, tempo
 
     def _groupGroove5KitParts(self):
         # Group kit parts into 5 polyphony levels

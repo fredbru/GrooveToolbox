@@ -4,11 +4,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 import csv
 
+from fx.bfd.groove import *
+from fx.common.filesystem import *
 
-def addRelativePathToSystemPath(relPath):
-    if __name__ == '__main__' and __package__ is None:
-        from os import sys, path
-        sys.path.append(path.join(path.dirname(path.abspath(__file__)), relPath))
+np.set_printoptions(suppress=True,precision=2)
 
 def getAllHitInfo(hits, grooveLength):
     """ Create list of all hits in a groove and relevant information for each
@@ -74,10 +73,10 @@ def getAllHitInfo(hits, grooveLength):
 
     return allEvents
 
-
 def getGroovesFromBundle(grooveBundle):
     """ Get information for all grooves from within a bundle. Extract hits and
     groove names into arrays, then put grooves and names into two separate lists
+    Assumes a groove is 2 bars long, 4/4
     :param grooveDom: groove object from .xml
     :return:
     """
@@ -100,19 +99,41 @@ def getGroovesFromBundle(grooveBundle):
 
         allGroovesHitInfo.append(roundedGrooveEvents)
         allGrooveNames.append(newGroove.name)
-    return allGroovesHitInfo, allGrooveNames
+    return allGroovesHitInfo, allGrooveNames, tempo
 
+def getGrooveFromBFDPalette(grooveName):
+    # Get a single groove and its corresponding microtiming matrix in correct format
+    # from extracted hit info
 
-addRelativePathToSystemPath("../shared")
+    pathToPalettes = "/home/fred/BFD/python/GrooveToolbox/Grooves/"
+    paletteFileName = grooveName
 
-from fx.bfd.groove import *
-from fx.common.filesystem import *
+    bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
+    grooveBundle = getGrooveNodes(bundleNode)
 
-pathToPalettes = "/home/fred/BFD/python/GrooveToolbox/Grooves/"
-paletteFileName = "Glam Get Down.bfd3pal"
+    allGroovesHitInfo, allGrooveNames, tempo = getGroovesFromBundle(grooveBundle)
 
-bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
-grooveBundle = getGrooveNodes(bundleNode)
+    hitsMatrix = np.zeros([32, 10])
+    timingMatrix = np.zeros([32,10])
+    timingMatrix[:] = np.nan
 
-allGroovesHitInfo, allGrooveNames = getGroovesFromBundle(grooveBundle)
-print(allGroovesHitInfo)
+    grooveIndex = allGrooveNames.index(grooveName)
+    singleGrooveHitInfo = allGroovesHitInfo[grooveIndex]
+
+    for j in range(singleGrooveHitInfo.shape[0]):
+        timePosition = int(singleGrooveHitInfo[j,0]*4)
+        kitPiecePosition = int(singleGrooveHitInfo[j, 2])
+        timingMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,2]
+        hitsMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,1]
+
+    return hitsMatrix, timingMatrix, tempo
+
+# pathToPalettes = "/home/fred/BFD/python/GrooveToolbox/Grooves/"
+# paletteFileName = "Glam Get Down.bfd3pal"
+#
+# bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
+# grooveBundle = getGrooveNodes(bundleNode)
+#
+# allGroovesHitInfo, allGrooveNames = getGroovesFromBundle(grooveBundle)
+
+#hitsMatrix, timingMatrix = getOneGroove("Glam Get Down 7", allGrooveNames, allGroovesHitInfo)
