@@ -17,7 +17,6 @@ from pandas.plotting import autocorrelation_plot
 import matplotlib.pyplot as plt
 from scipy import stats
 
-
 class Groove():
     def __init__(self, filename, extractFeatures=True, velocityType="Regular"):
         # Filename - name of groove file to load

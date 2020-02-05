@@ -14,12 +14,12 @@ import Groove
 nameA = "Glam Get Down 5.npy"
 nameB = "Glam Get Down 7.npy"
 
-GlamGetDown5 = Groove.Groove("Glam Get Down 7.npy", velocityType="None")
+GlamGetDown5 = Groove.Groove("Glam Get Down 5.npy", velocityType="None")
 # print(GlamGetDown5.groove10Parts)
 # print(GlamGetDown5.rhythmFeatures.getLowSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getMidSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getHighSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getPolyphonicSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getTotalSymmetry())
-
-print(GlamGetDown5.microtimingFeatures.swingRatio)
+print(GlamGetDown5.groove10Parts)
+print(GlamGetDown5.microtimingFeatures.microtimingMatrix)
