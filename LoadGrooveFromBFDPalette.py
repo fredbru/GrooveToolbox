@@ -101,12 +101,12 @@ def getGroovesFromBundle(grooveBundle):
         allGrooveNames.append(newGroove.name)
     return allGroovesHitInfo, allGrooveNames, tempo
 
-def getGrooveFromBFDPalette(grooveName):
+def getGrooveFromBFDPalette(filename, grooveName):
     # Get a single groove and its corresponding microtiming matrix in correct format
     # from extracted hit info
 
     pathToPalettes = "/home/fred/BFD/python/GrooveToolbox/Grooves/"
-    paletteFileName = grooveName
+    paletteFileName = filename
 
     bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
     grooveBundle = getGrooveNodes(bundleNode)
@@ -127,13 +127,3 @@ def getGrooveFromBFDPalette(grooveName):
         hitsMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,1]
 
     return hitsMatrix, timingMatrix, tempo
-
-# pathToPalettes = "/home/fred/BFD/python/GrooveToolbox/Grooves/"
-# paletteFileName = "Glam Get Down.bfd3pal"
-#
-# bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
-# grooveBundle = getGrooveNodes(bundleNode)
-#
-# allGroovesHitInfo, allGrooveNames = getGroovesFromBundle(grooveBundle)
-
-#hitsMatrix, timingMatrix = getOneGroove("Glam Get Down 7", allGrooveNames, allGroovesHitInfo)

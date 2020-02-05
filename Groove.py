@@ -18,14 +18,16 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from LoadGrooveFromBFDPalette import *
 
-class Groove():
-    def __init__(self, filename, extractFeatures=True, velocityType="Regular"):
+class NewGroove():
+    def __init__(self, hitsMatrix, timingMatrix, tempo, extractFeatures=True, velocityType="Regular"):
         # Filename - name of groove file to load
         # extractFeatures - if True (default), extract all features upon groove creation.
         # Set false if you don't need all features - instead retrieve as and when you need them
 
         np.set_printoptions(precision=2)
-        self.groove10Parts, self.timingMatrix, tempo = self._loadGrooveFile(filename)
+        self.groove10Parts = hitsMatrix
+        self.timingMatrix = timingMatrix
+
 
         if velocityType == "None":
             self.groove10Parts = np.ceil(self.groove10Parts)
@@ -37,28 +39,12 @@ class Groove():
         self.groove5Parts = self._groupGroove5KitParts()
         self.groove3Parts = self._groupGroove3KitParts()
 
-        #self.rhythmFeatures = RhythmFeatures(self.groove10Parts, self.groove5Parts, self.groove3Parts)
+        self.rhythmFeatures = RhythmFeatures(self.groove10Parts, self.groove5Parts, self.groove3Parts)
         self.microtimingFeatures = MicrotimingFeatures(self.timingMatrix, tempo)
 
         if extractFeatures:
-            #self.rhythmFeatures.getAllFeatures()
+            self.rhythmFeatures.getAllFeatures()
             self.microtimingFeatures.getAllFeatures() #todo: microtiming stuff
-
-    def _loadGrooveFile(self, filename):
-        # Load groove file from filename. Accept multiple different file types
-        # todo : build in midi, BFD and audio file loading (plus any other formats)
-        if filename.endswith('.npy'):
-            groove10Parts = np.load(filename)
-            tempo = 120.0 #todo: fix dealing with tempo for numpy files
-            try:
-                timingMatrix = np.load(filename[0:-4] + "-timing.npy") #currently timing matrix has extra column for index
-            except:
-                print('Need matching timing file for .npy type - named in format GrooveName-timing.npy ')
-        elif filename.endswith('.bfd3pal') or filename.endswith('.bfd2pal'):
-            groove10Parts, timingMatrix, tempo = getGrooveFromBFDPalette(filename)
-        elif filename.endswith('.midi'):
-            print("Midi input not yet implemented")
-        return groove10Parts, timingMatrix, tempo
 
     def _groupGroove5KitParts(self):
         # Group kit parts into 5 polyphony levels

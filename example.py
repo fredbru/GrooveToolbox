@@ -10,18 +10,22 @@ def addRelativePathToSystemPath(relPath):
 
 addRelativePathToSystemPath("../shared")
 
-import numpy as np
-import Groove
+from LoadGrooveFromBFDPalette import *
+from Groove import *
 
-nameA = "Glam Get Down 5.npy"
-nameB = "Glam Get Down 7.npy"
+fileName = "Glam Get Down.bfd3pal"
+grooveName = "Glam Get Down 7"
 
-GlamGetDown5 = Groove.Groove("Glam Get Down.bfd3pal", velocityType="None")
-# print(GlamGetDown5.groove10Parts)
+hitsMatrix, timingMatrix, tempo = getGrooveFromBFDPalette(fileName, grooveName)
+print(hitsMatrix)
+
+GlamGetDown5 = NewGroove(hitsMatrix, timingMatrix, tempo, velocityType="None")
+
+print(GlamGetDown5.groove10Parts)
 # print(GlamGetDown5.rhythmFeatures.getLowSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getMidSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getHighSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getPolyphonicSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getTotalSymmetry())
-print(GlamGetDown5.groove10Parts)
-print(GlamGetDown5.microtimingFeatures.microtimingMatrix)
+# print(GlamGetDown5.groove10Parts)
+# print(GlamGetDown5.microtimingFeatures.microtimingMatrix)

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b8dbde8-48c5-418f-bc46-bc547fc60bbf" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Groove.py" afterPath="$PROJECT_DIR$/Groove.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LoadGrooveFromBFDPalette.py" afterPath="$PROJECT_DIR$/LoadGrooveFromBFDPalette.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.py" afterPath="$PROJECT_DIR$/example.py" />
@@ -29,22 +30,10 @@
           <file leaf-file-name="example.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/example.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="238">
-                  <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+                <state relative-caret-position="408">
+                  <caret line="24" column="2" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
                   <folding>
-                    <element signature="e#490#508#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="LoadGrooveFromBFDPalette.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/LoadGrooveFromBFDPalette.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="544">
-                  <caret line="32" column="38" selection-start-line="32" selection-start-column="38" selection-end-line="32" selection-end-column="38" />
-                  <folding>
-                    <element signature="e#0#9#0" expanded="true" />
+                    <element signature="e#490#528#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -53,10 +42,22 @@
           <file leaf-file-name="Groove.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Groove.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-714">
-                  <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+                <state relative-caret-position="510">
+                  <caret line="45" column="12" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
                   <folding>
-                    <element signature="e#4247#16817#0" expanded="false" />
+                    <element signature="e#272#290#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="LoadGrooveFromBFDPalette.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/LoadGrooveFromBFDPalette.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1070">
+                  <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#0#9#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -65,7 +66,7 @@
           <file leaf-file-name="Get-All-Similarity.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/../MusicSOM/Get-All-Similarity.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="841">
+                <state relative-caret-position="5015">
                   <caret line="428" column="15" selection-start-line="428" selection-start-column="15" selection-end-line="428" selection-end-column="15" />
                   <folding>
                     <element signature="e#0#18#0" expanded="true" />
@@ -91,7 +92,7 @@
         </leaf>
       </split-first>
       <split-second>
-        <leaf>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="Eval-Groove-Parse.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/../MusicSOM/Eval-Groove-Parse.py">
               <provider selected="true" editor-type-id="text-editor">
@@ -129,9 +130,9 @@
         <option value="$PROJECT_DIR$/Example.py" />
         <option value="$PROJECT_DIR$/../Microtiming-Feature-Testing/Microtiming-Feature-Testing.py" />
         <option value="$PROJECT_DIR$/LoadGrooveFromBFDFile.py" />
-        <option value="$PROJECT_DIR$/Groove.py" />
         <option value="$PROJECT_DIR$/LoadGrooveFromBFDPalette.py" />
         <option value="$PROJECT_DIR$/example.py" />
+        <option value="$PROJECT_DIR$/Groove.py" />
       </list>
     </option>
   </component>
@@ -365,7 +366,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -375,7 +376,7 @@
         <state relative-caret-position="952">
           <caret line="56" column="62" selection-start-line="56" selection-start-column="62" selection-end-line="56" selection-end-column="62" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -407,7 +408,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -417,7 +418,7 @@
         <state relative-caret-position="7650">
           <caret line="450" column="0" selection-start-line="450" selection-start-column="0" selection-end-line="450" selection-end-column="0" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -427,7 +428,7 @@
         <state relative-caret-position="289">
           <caret line="18" column="56" selection-start-line="18" selection-start-column="56" selection-end-line="18" selection-end-column="56" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -437,7 +438,7 @@
         <state relative-caret-position="5950">
           <caret line="350" column="13" selection-start-line="350" selection-start-column="13" selection-end-line="350" selection-end-column="13" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -469,7 +470,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -479,7 +480,7 @@
         <state relative-caret-position="272">
           <caret line="17" column="53" selection-start-line="17" selection-start-column="53" selection-end-line="17" selection-end-column="53" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -489,7 +490,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -521,7 +522,7 @@
         <state relative-caret-position="102">
           <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -531,7 +532,7 @@
         <state relative-caret-position="255">
           <caret line="16" column="45" selection-start-line="16" selection-start-column="45" selection-end-line="16" selection-end-column="45" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -541,7 +542,7 @@
         <state relative-caret-position="1547">
           <caret line="91" column="0" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -573,7 +574,7 @@
         <state relative-caret-position="204">
           <caret line="13" column="32" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -583,7 +584,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -615,7 +616,7 @@
         <state relative-caret-position="221">
           <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -625,7 +626,7 @@
         <state relative-caret-position="340">
           <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -643,7 +644,7 @@
         <state relative-caret-position="221">
           <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -653,7 +654,7 @@
         <state relative-caret-position="1462">
           <caret line="123" column="44" selection-start-line="123" selection-start-column="44" selection-end-line="123" selection-end-column="44" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -671,7 +672,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -681,7 +682,7 @@
         <state relative-caret-position="153">
           <caret line="9" column="15" selection-start-line="9" selection-start-column="15" selection-end-line="9" selection-end-column="15" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -699,7 +700,7 @@
         <state relative-caret-position="221">
           <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -709,7 +710,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -727,7 +728,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -737,7 +738,7 @@
         <state relative-caret-position="221">
           <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -747,7 +748,7 @@
         <state relative-caret-position="255">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
-            <element signature="e#490#508#0" expanded="true" />
+            <element signature="e#490#528#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -757,7 +758,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -787,7 +788,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../MusicSOM/Get-All-Similarity.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="841">
+        <state relative-caret-position="5015">
           <caret line="428" column="15" selection-start-line="428" selection-start-column="15" selection-end-line="428" selection-end-column="15" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -803,20 +804,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="209">
           <caret line="219" column="0" selection-start-line="219" selection-start-column="0" selection-end-line="219" selection-end-column="58" />
-          <folding>
-            <element signature="e#329#338#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LoadGrooveFromBFDFile.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/LoadGrooveFromBFDFile.py" />
     <entry file="file://$PROJECT_DIR$/../MusicSOM/Eval-Groove-Parse.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="748">
@@ -832,32 +823,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding>
-            <element signature="e#490#508#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/LoadGrooveFromBFDPalette.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="32" column="38" selection-start-line="32" selection-start-column="38" selection-end-line="32" selection-end-column="38" />
+        <state relative-caret-position="1070">
+          <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/example.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="2" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
+          <folding>
+            <element signature="e#490#528#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Groove.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-714">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+        <state relative-caret-position="510">
+          <caret line="45" column="12" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
           <folding>
-            <element signature="e#4247#16817#0" expanded="false" />
+            <element signature="e#272#290#0" expanded="true" />
           </folding>
         </state>
       </provider>
