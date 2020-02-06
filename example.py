@@ -14,7 +14,7 @@ from LoadGrooveFromBFDPalette import *
 from Groove import *
 
 fileName = "Stanton Moore JB.bfd3pal"
-grooveName = "JB 19"
+grooveName = "JB 20"
 
 hitsMatrix, timingMatrix, tempo = getGrooveFromBFDPalette(fileName, grooveName)
 

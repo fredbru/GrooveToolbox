@@ -378,8 +378,12 @@ class MicrotimingFeatures():
 
         self.isSwung = self.checkIfSwung()
 
-        self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[0:16])
-        self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[16:])
+        self.microtimingEventProfile = np.hstack([self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[0:16]),
+                                            self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[16:])])
+        print(self.microtimingEventProfile)
+        self.getLaidbackness()
+        self.getOntopness()
+        self.getPushness()
         # self.swingRatio = []
         # self.pushness = []
         # self.laidbackness = []
@@ -475,17 +479,31 @@ class MicrotimingFeatures():
         if snareTiming4 < hihatTiming4 - threshold:
             microtimingToCymbalProfile[7] = 1
 
-        self.microtimingEventProfile = np.hstack([microtimingToGridProfile,microtimingToCymbalProfile])
-        print(self.microtimingEventProfile)
+        microtimingEventProfile1bar = np.clip(microtimingToGridProfile+microtimingToCymbalProfile,0,1)
+
+        return microtimingEventProfile1bar
 
     def getPushness(self):
-        pass
+        pushEvents = self.microtimingEventProfile[1::2]
+        pushEventCount = np.count_nonzero(pushEvents)
+        totalPushPositions = pushEvents.shape[0]
+        self.pushness = pushEventCount / totalPushPositions
+        print(self.pushness)
+        return self.pushness
 
     def getLaidbackness(self):
-        pass
+        # number of laid back events / number of possible laid back events
+        laidbackEvents = self.microtimingEventProfile[0::2]
+        laidbackEventCount = np.count_nonzero(laidbackEvents)
+        totalLaidbackPositions = laidbackEvents.shape[0]
+        self.laidbackness =  laidbackEventCount / float(totalLaidbackPositions)
+        return self.laidbackness
 
     def getOntopness(self):
-        pass
+        # number of events without microtiming (=0 in microtiming event profile) versus number of possible events
+        ontopEventCount = np.count_nonzero(self.microtimingEventProfile==0)
+        self.ontopness = ontopEventCount / float(self.microtimingEventProfile.shape[0])
+        return self.ontopness
 
     def getAverageTimingDeviation(self):
         #self.averageTimingMatrix = np.sum(np.nan_to_num(self.microtimingMatrix), axis=1)
