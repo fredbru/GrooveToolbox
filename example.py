@@ -14,10 +14,9 @@ from LoadGrooveFromBFDPalette import *
 from Groove import *
 
 fileName = "Stanton Moore JB.bfd3pal"
-grooveName = "JB 22"
+grooveName = "JB 19"
 
 hitsMatrix, timingMatrix, tempo = getGrooveFromBFDPalette(fileName, grooveName)
-print(timingMatrix)
 
 GlamGetDown5 = NewGroove(hitsMatrix, timingMatrix, tempo, velocityType="None")
 

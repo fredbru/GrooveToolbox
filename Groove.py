@@ -377,7 +377,9 @@ class MicrotimingFeatures():
         # need to decide how to deal with this when most of the features are calculated automatically
 
         self.isSwung = self.checkIfSwung()
-        self._getMicrotimingEventProfile1Bar()
+
+        self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[0:16])
+        self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[16:])
         # self.swingRatio = []
         # self.pushness = []
         # self.laidbackness = []
@@ -423,36 +425,36 @@ class MicrotimingFeatures():
             self.swingRatio = 1
         self.swingness = swingCount / len(swungNotePositions)
 
-    def _getMicrotimingEventProfile1Bar(self):
+    def _getMicrotimingEventProfile1Bar(self, microtimingMatrix):
         # Get profile of timing events for use in pushness/laidbackness/ontopness features
         microtimingToGridProfile = np.zeros([8])
         microtimingToCymbalProfile = np.zeros([8])
         threshold = 15.0
-        kickTiming1 = self.microtimingMatrix[0, 0]
-        hihatTiming1 = self.microtimingMatrix[0, 2]
-        snareTiming2 = self.microtimingMatrix[4, 1]
-        hihatTiming2 = self.microtimingMatrix[4, 2]
-        kickTiming3 = self.microtimingMatrix[8, 0]
-        hihatTiming3 = self.microtimingMatrix[8, 2]
-        snareTiming4 = self.microtimingMatrix[12, 1]
-        hihatTiming4 = self.microtimingMatrix[12, 2]
+        kickTiming1 = microtimingMatrix[0, 0]
+        hihatTiming1 = microtimingMatrix[0, 2]
+        snareTiming2 = microtimingMatrix[4, 1]
+        hihatTiming2 = microtimingMatrix[4, 2]
+        kickTiming3 = microtimingMatrix[8, 0]
+        hihatTiming3 = microtimingMatrix[8, 2]
+        snareTiming4 = microtimingMatrix[12, 1]
+        hihatTiming4 = microtimingMatrix[12, 2]
 
-        if kickTiming1 > threshold or hihatTiming1 > threshold:
+        if kickTiming1 > threshold :
             microtimingToGridProfile[0] = 1
-        if kickTiming1 < -threshold or hihatTiming1 < -threshold:
+        if kickTiming1 < -threshold:
             microtimingToGridProfile[1] = 1
-        if snareTiming2 > threshold or hihatTiming2 > threshold:
+        if snareTiming2 > threshold:
             microtimingToGridProfile[2] = 1
-        if snareTiming2 < -threshold or hihatTiming2 < -threshold:
+        if snareTiming2 < -threshold:
             microtimingToGridProfile[3] = 1
 
-        if kickTiming3 > threshold or hihatTiming3 > threshold:
+        if kickTiming3 > threshold:
             microtimingToGridProfile[4] = 1
-        if kickTiming3 < -threshold or hihatTiming3 < -threshold:
+        if kickTiming3 < -threshold:
             microtimingToGridProfile[5] = 1
-        if snareTiming4 > threshold or hihatTiming4 > threshold:
+        if snareTiming4 > threshold:
             microtimingToGridProfile[6] = 1
-        if snareTiming4 < -threshold or hihatTiming4 < -threshold:
+        if snareTiming4 < -threshold:
             microtimingToGridProfile[7] = 1
 
         if kickTiming1 > hihatTiming1 + threshold:
