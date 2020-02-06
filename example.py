@@ -13,15 +13,14 @@ addRelativePathToSystemPath("../shared")
 from LoadGrooveFromBFDPalette import *
 from Groove import *
 
-fileName = "Glam Get Down.bfd3pal"
-grooveName = "Glam Get Down 7"
+fileName = "Stanton Moore JB.bfd3pal"
+grooveName = "JB 22"
 
 hitsMatrix, timingMatrix, tempo = getGrooveFromBFDPalette(fileName, grooveName)
-print(hitsMatrix)
+print(timingMatrix)
 
 GlamGetDown5 = NewGroove(hitsMatrix, timingMatrix, tempo, velocityType="None")
 
-print(GlamGetDown5.groove10Parts)
 # print(GlamGetDown5.rhythmFeatures.getLowSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getMidSyncopation())
 # print(GlamGetDown5.rhythmFeatures.getHighSyncopation())

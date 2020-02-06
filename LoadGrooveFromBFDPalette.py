@@ -123,7 +123,7 @@ def getGrooveFromBFDPalette(filename, grooveName):
     for j in range(singleGrooveHitInfo.shape[0]):
         timePosition = int(singleGrooveHitInfo[j,0]*4)
         kitPiecePosition = int(singleGrooveHitInfo[j, 2])
-        timingMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,2]
+        timingMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,3]
         hitsMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,1]
 
     return hitsMatrix, timingMatrix, tempo
