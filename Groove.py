@@ -44,7 +44,7 @@ class NewGroove():
 
         if extractFeatures:
             self.rhythmFeatures.getAllFeatures()
-            self.microtimingFeatures.getAllFeatures() #todo: microtiming stuff
+            self.microtimingFeatures.getAllFeatures()
 
     def _groupGroove5KitParts(self):
         # Group kit parts into 5 polyphony levels
@@ -75,6 +75,8 @@ class NewGroove():
         return groove5Parts
 
     def _groupGroove3KitParts(self): #todo: check this is working correctly for toms (same with 5 part function)
+        # Group kit pieces into 3 parts low (kick), mid (snare + toms) and high (cymbals)
+        
         kick = self.groove5Parts[:, 0]
         snare = self.groove5Parts[:, 1]
         closed = self.groove5Parts[:, 2]
@@ -97,11 +99,10 @@ class RhythmFeatures():
         #todo: Do I want to list names of class variables in here? So user can see them easily?
 
     def getAllFeatures(self):
-        # get all standard features. create separate functions for feature calculations so user
-        # can calculate features individually if they would like to.
+        # Get all standard features in one go
 
-        self.getCombinedSyncopation()
-        self.getPolyphonicSyncopation()
+        self.combinedSyncopation = self.getCombinedSyncopation()
+        self.polyphonicSyncopation =self.getPolyphonicSyncopation()
         self.getLowSyncopation()
         self.getMidSyncopation()
         self.getHighSyncopation()
@@ -119,14 +120,15 @@ class RhythmFeatures():
 
     def getCombinedSyncopation(self):
         # Calculate syncopation as summed across all kit parts.
+
         self.combinedSyncopation = 0.0
         for i in range(self.groove10Parts.shape[1]):
             self.combinedSyncopation += self.getSyncopation1Part(self.groove10Parts[:,i])
         return self.combinedSyncopation
 
     def getPolyphonicSyncopation(self):
-        # Calculate syncopation using Witek combined drum pattern syncopation distance
-        # Only look semiquaver and quaver steps ahead.
+        # Calculate syncopation using Witek syncopation distance - modelling syncopation between instruments
+        # Works on semiquaver and quaver levels of syncopation
 
         salienceProfile = [0, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3,
                            0, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3]
@@ -146,8 +148,9 @@ class RhythmFeatures():
         return totalSyncopation
 
     def _getKickSync(self, low, mid, high, i, salienceProfile):
-        # find instances  when kick syncopates against hi hat/snare on the beat. looking for kick proceeded by another hit
-        # on a weaker metrical position
+        # Find instances  when kick syncopates against hi hat/snare on the beat.
+        # For use in polyphonic syncopation feature
+
         kickSync = 0
         k = 0
         nextHit = ""
@@ -188,8 +191,9 @@ class RhythmFeatures():
         return kickSync
 
     def _getSnareSync(self, low, mid, high, i, salienceProfile):
-        # find instances  when snare syncopates against hi hat/kick on the beat
-        # S = n - ndi + I
+        # Find instances  when snare syncopates against hi hat/kick on the beat
+        # For use in polyphonic syncopation feature
+
         snareSync = 0
         nextHit = ""
         k = 0
@@ -229,10 +233,9 @@ class RhythmFeatures():
         return snareSync
 
     def getSyncopation1Part(self, part):
-        # Using Longuet-Higgins  and  Lee 1984 metric profile.
-        # Uses velocity if available
-        # Assuming it's a drum loop - loops round.
-        # syncopation = difference in profile weights where proceeding weight > preceeding
+        # Using Longuet-Higgins  and  Lee 1984 metric profile, get syncopation of 1 monophonic line.
+        # Assumes it's a drum loop - loops round.
+
         metricalProfile = [5, 1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1,
                                    5, 1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1]
 
@@ -249,26 +252,30 @@ class RhythmFeatures():
         return syncopation
 
     def getLowSyncopation(self):
+        # Get syncopation of low part (kick drum)
+
         self.lowSyncopation = self.getSyncopation1Part(self.groove10Parts[:,0])
         return self.lowSyncopation
 
     def getMidSyncopation(self):
-        # sum parts here
+        # Get syncopation of mid parts - summed snare and tom parts
         midParts = np.clip(self.groove10Parts[:,1] + self.groove10Parts[:,7] + self.groove10Parts[:,8] +
                              self.groove10Parts[:,9],0,1)
         self.midSyncopation = self.getSyncopation1Part(midParts)
         return self.midSyncopation
 
     def getHighSyncopation(self):
-        # sum parts here
+        # Get syncopation of high parts - summed cymbals
+
         highParts = np.clip(self.groove10Parts[:,2] + self.groove10Parts[:,3] + self.groove10Parts[:,4] +
                             self.groove10Parts[:, 5] + self.groove10Parts[:,6],0,1)
         self.highSyncopation = self.getSyncopation1Part(highParts)
         return self.highSyncopation
 
     def getDensity(self, part):
-        # Get density of any single kit part or part group. Main difference to total density is that you divide by
+        # Get density of any single kit part or part group. Difference to total density is that you divide by
         # number of metrical steps, instead of total number of possible onsets in the pattern
+
         numSteps = part.shape[0]
         numOnsets = np.count_nonzero(np.ceil(part) == 1)
         averageVelocity = part[part!=0.0].mean()
@@ -279,25 +286,34 @@ class RhythmFeatures():
         return density
 
     def getLowDensity(self):
+        # Get density of low part (kick)
+
         self.lowDensity = self.getDensity(self.groove10Parts[:,0])
         return self.lowDensity
 
     def getMidDensity(self):
+        # Get density of mid parts (toms and snare)
+
         midParts = np.vstack([self.groove10Parts[:,1], self.groove10Parts[:,7], self.groove10Parts[:,8],
                              self.groove10Parts[:,9]])
         self.midDensity = self.getDensity(midParts)
         return self.midDensity
 
     def getHighDensity(self):
+        # Get density of high parts (cymbals)
+
         highParts = np.vstack([self.groove10Parts[:,2], self.groove10Parts[:,3], self.groove10Parts[:,4],
                              self.groove10Parts[:,5],self.groove10Parts[:,6]])
 
-        self.highDensity = self.getDensity(self.groove10Parts[:,2])
+        self.highDensity = self.getDensity(highParts)
         return self.highDensity
 
     def getTotalDensity(self):
-        # for 10 parts. Note values do tend to be very low for this, due to high numbers of parts meaning sparse
+        # Get total density calculated over 10 parts.
+        # Total density = number of onsets / number of possible onsets (= length of pattern x 10)
+        # Return values tend to be very low for this, due to high numbers of parts meaning sparse
         # matricies.
+
         numStepsTotal = self.groove10Parts.size
         numOnsets = np.count_nonzero(np.ceil(self.groove10Parts) == 1)
         averageVelocity = self.groove10Parts[self.groove10Parts!=0.0].mean()
@@ -305,12 +321,17 @@ class RhythmFeatures():
         return self.totalDensity
 
     def getHiness(self):
+        #todo
         pass
 
     def getHiSyncness(self):
+        #todo
         pass
 
     def _getAutocorrelationCurve(self, part):
+        # Return autocorrelation curve for a single part.
+        # Uses autocorrelation plot function within pandas
+
         plt.figure()
         ax = autocorrelation_plot(part)
         autocorrelation = ax.lines[5].get_data()[1]
@@ -324,6 +345,7 @@ class RhythmFeatures():
 
     def getTotalAutocorrelationCurve(self):
         # Get autocorrelation curve for all parts summed.
+
         self.totalAutocorrelationCurve = 0.0
         for i in range(self.groove10Parts.shape[1]):
             self.totalAutocorrelationCurve += self._getAutocorrelationCurve(self.groove10Parts[:,i])
@@ -332,17 +354,23 @@ class RhythmFeatures():
         return self.totalAutocorrelationCurve
 
     def getAutocorrelationSkew(self):
+        # Get skewness of autocorrelation curve
+
         self.autocorrelationSkew = stats.skew(self.totalAutocorrelationCurve)
         return self.autocorrelationSkew
 
     def getAutocorrelationMaxAmplitude(self):
+        # Get maximum amplitude of autocorrelation curve
+
         self.autocorrelationMaxAmplitude = self.totalAutocorrelationCurve.max()
         return self.autocorrelationMaxAmplitude
 
     def getAutocorrelationCentroid(self):
+        #todo
         pass
 
     def getAutocorrelationHarmonicity(self):
+        #todo
         pass
 
     def _getSymmetry(self, part):
@@ -350,6 +378,7 @@ class RhythmFeatures():
         # Defined as the the number of onsets that appear in the same positions in the first and second halves
         # of the pattern, divided by the total number of onsets in the pattern. As perfectly symmetricl pattner
         # would have a symmetry of 1.0
+
         symmetryCount = 0.0
         part1,part2 = np.split(part,2)
         for i in range(part1.shape[0]):
@@ -360,6 +389,9 @@ class RhythmFeatures():
         return symmetry
 
     def getTotalSymmetry(self):
+        # Get total symmetry of pattern. Defined as the number of onsets that appear in the same positions in the first
+        # and second halves of the pattern, divided by total number of onsets in the pattern.
+
         self.totalSymmetry = self._getSymmetry(self.groove10Parts)
         return self.totalSymmetry
 
@@ -373,21 +405,15 @@ class MicrotimingFeatures():
 
 
     def getAllFeatures(self):
-        # get all microtiming features. have separate one for individual features.
-        # need to decide how to deal with this when most of the features are calculated automatically
+        # Get all microtiming features.
 
         self.isSwung = self.checkIfSwung()
 
         self.microtimingEventProfile = np.hstack([self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[0:16]),
                                             self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[16:])])
-        print(self.microtimingEventProfile)
         self.getLaidbackness()
         self.getOntopness()
         self.getPushness()
-        # self.swingRatio = []
-        # self.pushness = []
-        # self.laidbackness = []
-        # self.ontopness = []
 
     def checkIfSwung(self):
 
@@ -405,6 +431,8 @@ class MicrotimingFeatures():
         return self.swingness
 
     def _getSwingInfo(self):
+        # Calculate all of the swing characteristics (swing ratio, swingness etc) in one go
+
         swungNotePositions = list(range(self.averageTimingMatrix.shape[0]))[3::4]
 
         swingCount = 0.0
@@ -430,7 +458,15 @@ class MicrotimingFeatures():
         self.swingness = swingCount / len(swungNotePositions)
 
     def _getMicrotimingEventProfile1Bar(self, microtimingMatrix):
-        # Get profile of timing events for use in pushness/laidbackness/ontopness features
+        # Get profile of microtiming events for use in pushness/laidbackness/ontopness features
+        # This profile represents the presence of specific timing events at certain positions in the pattern
+        # Microtiming events fall within the following categories:
+        #   Kick timing deviation - before/after metronome, before/after hihat, beats 1 and 3
+        #   Snare timing deviation - before/after metronome, before/after hihat, beats 2 and 4
+        # As such for one bar the profile contains 16 values.
+        # The profile uses binary values - it only measures the presence of timing events, and the style features are
+        # then calculated based on the number of events present that correspond to a certain timing feel.
+
         microtimingToGridProfile = np.zeros([8])
         microtimingToCymbalProfile = np.zeros([8])
         threshold = 15.0
@@ -484,15 +520,17 @@ class MicrotimingFeatures():
         return microtimingEventProfile1bar
 
     def getPushness(self):
+        # Calculate how 'pushed' the loop is, based on number of pushed events / number of possible pushed events
+
         pushEvents = self.microtimingEventProfile[1::2]
         pushEventCount = np.count_nonzero(pushEvents)
         totalPushPositions = pushEvents.shape[0]
         self.pushness = pushEventCount / totalPushPositions
-        print(self.pushness)
         return self.pushness
 
     def getLaidbackness(self):
-        # number of laid back events / number of possible laid back events
+        # Calculate how 'laid-back' the loop is, based on the number of laid back events / number of possible laid back events
+
         laidbackEvents = self.microtimingEventProfile[0::2]
         laidbackEventCount = np.count_nonzero(laidbackEvents)
         totalLaidbackPositions = laidbackEvents.shape[0]
@@ -500,13 +538,16 @@ class MicrotimingFeatures():
         return self.laidbackness
 
     def getOntopness(self):
-        # number of events without microtiming (=0 in microtiming event profile) versus number of possible events
+        # Calculate how 'ontop' the loop is, based on the number of events without microtiming (=0 in microtiming
+        # event profile) / number of possible microtiming events
+
         ontopEventCount = np.count_nonzero(self.microtimingEventProfile==0)
         self.ontopness = ontopEventCount / float(self.microtimingEventProfile.shape[0])
         return self.ontopness
 
     def getAverageTimingDeviation(self):
-        #self.averageTimingMatrix = np.sum(np.nan_to_num(self.microtimingMatrix), axis=1)
+        # Get vector of average microtiming deviation at each metrical position
+
         self.averageTimingMatrix = np.zeros([self.microtimingMatrix.shape[0]])
         for i in range(self.microtimingMatrix.shape[0]):
             rowSum = 0.0
