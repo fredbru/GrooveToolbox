@@ -1,5 +1,5 @@
 # Example use of GrooveToolbox
-# Load a groove from a BFD palette file. Calculate all rhythm and microtiming featuers from it.
+# Load a groove from a BFD palette file. Calculate all rhythm and microtiming features from it.
 
 from LoadGrooveFromBFDPalette import *
 from Groove import *

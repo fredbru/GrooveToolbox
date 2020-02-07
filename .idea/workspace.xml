@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b8dbde8-48c5-418f-bc46-bc547fc60bbf" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/syncopation testing bits" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Groove.py" afterPath="$PROJECT_DIR$/Groove.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LoadGrooveFromBFDPalette.py" afterPath="$PROJECT_DIR$/LoadGrooveFromBFDPalette.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.py" afterPath="$PROJECT_DIR$/example.py" />
     </list>
     <ignored path="GrooveToolbox.iws" />
@@ -26,11 +22,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="example.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="example.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/example.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <state relative-caret-position="17">
+              <caret line="1" column="85" selection-start-line="1" selection-start-column="85" selection-end-line="1" selection-end-column="85" />
               <folding>
                 <element signature="e#128#166#0" expanded="true" />
               </folding>
@@ -48,11 +44,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LoadGrooveFromBFDPalette.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LoadGrooveFromBFDPalette.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LoadGrooveFromBFDPalette.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+            <state relative-caret-position="221">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -111,8 +107,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="778" />
-    <option name="y" value="80" />
+    <option name="x" value="788" />
+    <option name="y" value="52" />
     <option name="width" value="1132" />
     <option name="height" value="970" />
   </component>
@@ -295,7 +291,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="778" y="80" width="1132" height="970" extended-state="0" />
+    <frame x="788" y="52" width="1132" height="970" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17761807" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -767,16 +763,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding>
-            <element signature="e#128#166#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Groove.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -787,10 +773,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/LoadGrooveFromBFDPalette.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        <state relative-caret-position="221">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="85" selection-start-line="1" selection-start-column="85" selection-end-line="1" selection-end-column="85" />
+          <folding>
+            <element signature="e#128#166#0" expanded="true" />
           </folding>
         </state>
       </provider>
