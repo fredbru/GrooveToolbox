@@ -1,7 +1,6 @@
 import os
 from xml.dom.minidom import parse
 import numpy as np
-from matplotlib import pyplot as plt
 import csv
 
 from fx.bfd.groove import *
@@ -103,9 +102,10 @@ def getGroovesFromBundle(grooveBundle):
 
 def getGrooveFromBFDPalette(filename, grooveName):
     # Get a single groove and its corresponding microtiming matrix in correct format
-    # from extracted hit info
+    # from extracted hit info.
+    # Input = name of palette file + name of groove within that palette you want to use
 
-    pathToPalettes = "/home/fred/BFD/python/GrooveToolbox/Grooves/"
+    pathToPalettes = "Grooves/"
     paletteFileName = filename
 
     bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))

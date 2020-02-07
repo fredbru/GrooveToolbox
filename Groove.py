@@ -12,7 +12,6 @@
 #     9 High tom
 
 import numpy as np
-from pandas import Series
 from pandas.plotting import autocorrelation_plot
 import matplotlib.pyplot as plt
 from scipy import stats
@@ -76,7 +75,7 @@ class NewGroove():
 
     def _groupGroove3KitParts(self): #todo: check this is working correctly for toms (same with 5 part function)
         # Group kit pieces into 3 parts low (kick), mid (snare + toms) and high (cymbals)
-        
+
         kick = self.groove5Parts[:, 0]
         snare = self.groove5Parts[:, 1]
         closed = self.groove5Parts[:, 2]
@@ -100,23 +99,36 @@ class RhythmFeatures():
 
     def getAllFeatures(self):
         # Get all standard features in one go
-
+        print("\n   Rhythm features:")
         self.combinedSyncopation = self.getCombinedSyncopation()
         self.polyphonicSyncopation =self.getPolyphonicSyncopation()
-        self.getLowSyncopation()
-        self.getMidSyncopation()
-        self.getHighSyncopation()
-        self.getLowDensity()
-        self.getMidDensity()
-        self.getHighDensity()
-        self.getTotalDensity()
-        self.getHiness()
-        self.getHiSyncness()
-        self.getAutocorrelationSkew()
-        self.getAutocorrelationMaxAmplitude()
-        self.getAutocorrelationCentroid()
-        self.getAutocorrelationHarmonicity()
-        self.getTotalSymmetry()
+        self.lowSyncopation = self.getLowSyncopation()
+        self.midSyncopation = self.getMidSyncopation()
+        self.highSyncopation = self.getHighSyncopation()
+        self.lowDensity = self.getLowDensity()
+        self.midDensity = self.getMidDensity()
+        self.highDensity = self.getHighDensity()
+        self.totalDensity = self.getTotalDensity()
+        #self.getHiness()
+        #self.getHiSyncness()
+        self.autocorrelationSkew = self.getAutocorrelationSkew()
+        self.autocorrelationMaxAmplitude = self.getAutocorrelationMaxAmplitude()
+        # self.getAutocorrelationCentroid()
+        # self.getAutocorrelationHarmonicity()
+        self.totalSymmetry = self.getTotalSymmetry()
+
+        print("Combined Mono Syncopation = " + str(self.combinedSyncopation))
+        print("Polyphonic Syncopation = " + str(self.polyphonicSyncopation))
+        print("Low Syncopation = " + str(self.lowSyncopation))
+        print("Mid Syncopation = " + str(self.midSyncopation))
+        print("High Syncopation = " + str(self.highSyncopation))
+        print("Low Density = " + str(self.lowDensity))
+        print("Mid Density = " + str(self.midDensity))
+        print("High Density = " + str(self.highDensity))
+        print("Autocorrelation Skewness = " + str(self.autocorrelationSkew))
+        print("Autocorrelation Max Amplitude = " + str(self.autocorrelationMaxAmplitude))
+        print("Symmetry = " + str(self.totalSymmetry))
+
 
     def getCombinedSyncopation(self):
         # Calculate syncopation as summed across all kit parts.
@@ -296,7 +308,7 @@ class RhythmFeatures():
 
         midParts = np.vstack([self.groove10Parts[:,1], self.groove10Parts[:,7], self.groove10Parts[:,8],
                              self.groove10Parts[:,9]])
-        self.midDensity = self.getDensity(midParts)
+        self.midDensity = self.getDensity(midParts.T)
         return self.midDensity
 
     def getHighDensity(self):
@@ -304,8 +316,7 @@ class RhythmFeatures():
 
         highParts = np.vstack([self.groove10Parts[:,2], self.groove10Parts[:,3], self.groove10Parts[:,4],
                              self.groove10Parts[:,5],self.groove10Parts[:,6]])
-
-        self.highDensity = self.getDensity(highParts)
+        self.highDensity = self.getDensity(highParts.T)
         return self.highDensity
 
     def getTotalDensity(self):
@@ -411,11 +422,20 @@ class MicrotimingFeatures():
 
         self.microtimingEventProfile = np.hstack([self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[0:16]),
                                             self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[16:])])
-        self.getLaidbackness()
-        self.getOntopness()
-        self.getPushness()
+        self.laidbackness = self.getLaidbackness()
+        self.ontopness = self.getOntopness()
+        self.pushness = self.getPushness()
+
+        print("\n   Microtiming features:")
+        print('Swing Ratio = ' + str(self.swingRatio))
+        print("Swingness = " + str(self.swingness))
+        print("Is swung = " + str(self.isSwung))
+        print("Laidback-ness  = " + str(self.laidbackness))
+        print("Ontop-ness  = " + str(self.ontopness))
+        print("Pushed-ness  = " + str(self.pushness))
 
     def checkIfSwung(self):
+        # Check if loop is swung - return 'true' or 'false'
 
         if self.swingness > 0.0:
             self.isSwung = True
