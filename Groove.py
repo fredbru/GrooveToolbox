@@ -88,6 +88,49 @@ class NewGroove():
 
         return np.vstack([low,mid[0,:],high[0,:]]).T
 
+    def getReducedGroove(self):
+        # Remove ornamentation from a groove to return a simplified representation of the rhythm structure
+        # change salience profile for different metres etc
+        salienceProfile = [0, -2, -1, -2, 0, -2, -1, -2, -0, -2, -1, -2, -0, -2, -1, -2,
+                           0, -2, -1, -2, 0, -2, -1, -2, 0, -2, -1, -2, 0, -2, -1, -2]
+        self.reducedGroove = np.zeros(self.groove10Parts.shape)
+        for i in range(10): #5 parts to reduce
+            self.reducedGroove[:,i] = self._reducePart(self.groove10Parts[:,i],salienceProfile)
+        return self.reducedGroove
+
+    def _reducePart(self, part, salienceProfile):
+        for i in range(self.groove10Parts.shape[0]):
+            if part[i] <= 0.4:
+                part[i] = 0
+        for i in range(self.groove10Parts.shape[0]):
+            if part[i] != 0.:  # hit detected - must be figural or density transform - on pulse i.
+                for k in range(0, i):  # iterate through all previous events up to i.
+                    if part[k] != 0. and salienceProfile[k] < salienceProfile[i]:
+                        # if there is a preceding event in a weaker pulse k (this is to be removed)
+
+                        # groove[k,0] then becomes k, and can either be density of figural
+                        for l in range(0, k):  # find strongest level pulse before k, with no events between m and k
+                            if part[l] != 0.:  # find an event if there is one
+                                previousEventIndex = l
+                            else:
+                                previousEventIndex = 0
+                        m = max(salienceProfile[
+                                previousEventIndex:k])  # find the strongest level between previous event index and k.
+                        # search for largest value in salience profile list between range l+1 and k-1. this is m.
+                        if m <= k:  # density if m not stronger than k
+                            part[k] = 0  # to remove a density transform just remove the note
+                        if m > k:  # figural transform
+                            part[m] = part[k]  # need to shift note forward - k to m.
+                            part[k] = 0  # need to shift note forward - k to m.
+            if part[i] == 0:
+                for k in range(0, i):
+                    if part[k] != 0. and salienceProfile[k] < salienceProfile[i]:  # syncopation detected
+                        part[i] = part[k]
+                        part[k] = 0.0
+        return part
+
+
+
 class RhythmFeatures():
     def __init__(self, groove10Parts, groove5Parts, groove3Parts):
         self.groove10Parts = groove10Parts
