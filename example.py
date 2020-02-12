@@ -4,10 +4,9 @@
 from LoadGrooveFromBFDPalette import *
 from Groove import *
 
-fileName = "Glam Get Down.bfd3pal"
-grooveName = "Glam Get Down 7"
+fileName = "Soul Blues.bfd3pal"
+grooveName = "Soul Blues 18"
 
 hitsMatrix, timingMatrix, tempo = getGrooveFromBFDPalette(fileName, grooveName)
 
 JB20 = NewGroove(hitsMatrix, timingMatrix, tempo, velocityType="None", extractFeatures=True)
-print(JB20.getReducedGroove())

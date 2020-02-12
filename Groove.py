@@ -99,16 +99,18 @@ class NewGroove():
         return self.reducedGroove
 
     def _reducePart(self, part, salienceProfile):
-        for i in range(self.groove10Parts.shape[0]):
+        length = self.groove10Parts.shape[0]
+        for i in range(length):
             if part[i] <= 0.4:
                 part[i] = 0
-        for i in range(self.groove10Parts.shape[0]):
+        for i in range(length):
             if part[i] != 0.:  # hit detected - must be figural or density transform - on pulse i.
                 for k in range(0, i):  # iterate through all previous events up to i.
                     if part[k] != 0. and salienceProfile[k] < salienceProfile[i]:
                         # if there is a preceding event in a weaker pulse k (this is to be removed)
 
                         # groove[k,0] then becomes k, and can either be density of figural
+                        previousEventIndex = 0
                         for l in range(0, k):  # find strongest level pulse before k, with no events between m and k
                             if part[l] != 0.:  # find an event if there is one
                                 previousEventIndex = l
@@ -156,7 +158,7 @@ class RhythmFeatures():
         #self.getHiSyncness()
         self.autocorrelationSkew = self.getAutocorrelationSkew()
         self.autocorrelationMaxAmplitude = self.getAutocorrelationMaxAmplitude()
-        # self.getAutocorrelationCentroid()
+        self.autocorrelationCentroid() = self.getAutocorrelationCentroid()
         # self.getAutocorrelationHarmonicity()
         self.totalSymmetry = self.getTotalSymmetry()
 
@@ -170,6 +172,7 @@ class RhythmFeatures():
         print("High Density = " + str(self.highDensity))
         print("Autocorrelation Skewness = " + str(self.autocorrelationSkew))
         print("Autocorrelation Max Amplitude = " + str(self.autocorrelationMaxAmplitude))
+        print("Autocorrelation Centroid = " + str(self.autocorrelationCentroid))
         print("Symmetry = " + str(self.totalSymmetry))
 
 
@@ -391,7 +394,6 @@ class RhythmFeatures():
         autocorrelation = ax.lines[5].get_data()[1]
         plt.plot(range(1, self.groove10Parts.shape[0]+1),
                  autocorrelation)  # plots from 1 to 32 inclusive - autocorrelation starts from 1 not 0 - 1-32
-        # plt.show()
         plt.cla()
         plt.clf()
         plt.close()
@@ -404,6 +406,7 @@ class RhythmFeatures():
         for i in range(self.groove10Parts.shape[1]):
             self.totalAutocorrelationCurve += self._getAutocorrelationCurve(self.groove10Parts[:,i])
         ax = autocorrelation_plot(self.totalAutocorrelationCurve)
+        plt.figure()
         plt.plot(range(1,33),self.totalAutocorrelationCurve)
         return self.totalAutocorrelationCurve
 
@@ -420,8 +423,22 @@ class RhythmFeatures():
         return self.autocorrelationMaxAmplitude
 
     def getAutocorrelationCentroid(self):
-        #todo
-        pass
+        #todo: test
+        # Like spectral centroid - weighted meean of frequencies in the signal, magnitude = weights.
+        centroidSum = 0
+        totalWeights = 0
+
+        for i in range(self.totalAutocorrelationCurve.shape[0]):
+            # half wave rectify
+            addition = self.totalAutocorrelationCurve[i] * i # sum all periodicities in the signal
+            if addition >= 0:
+                totalWeights += self.totalAutocorrelationCurve[i]
+                centroidSum += addition
+        if totalWeights != 0:
+            centroid = centroidSum / totalWeights
+        else:
+            centroid = self.groove10Parts.shape[0] / 2
+        return centroid
 
     def getAutocorrelationHarmonicity(self):
         #todo
