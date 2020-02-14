@@ -16,6 +16,8 @@ from pandas.plotting import autocorrelation_plot
 import matplotlib.pyplot as plt
 from scipy import stats
 from LoadGrooveFromBFDPalette import *
+from scipy.signal import find_peaks
+import math
 
 class NewGroove():
     def __init__(self, hitsMatrix, timingMatrix, tempo, extractFeatures=True, velocityType="Regular"):
@@ -159,7 +161,7 @@ class RhythmFeatures():
         self.autocorrelationSkew = self.getAutocorrelationSkew()
         self.autocorrelationMaxAmplitude = self.getAutocorrelationMaxAmplitude()
         self.autocorrelationCentroid = self.getAutocorrelationCentroid()
-        # self.getAutocorrelationHarmonicity()
+        self.getAutocorrelationHarmonicity()
         self.totalSymmetry = self.getTotalSymmetry()
 
         print("Combined Mono Syncopation = " + str(self.combinedSyncopation))
@@ -441,8 +443,26 @@ class RhythmFeatures():
         return self.autocorrelationCentroid
 
     def getAutocorrelationHarmonicity(self):
-        #todo
-        pass
+        # Autocorrelation Harmonicity - adapted from
+        # todo: test
+        alpha = 0.15
+        rectifiedAutocorrelation = self.totalAutocorrelationCurve
+        for i in range(self.totalAutocorrelationCurve.shape[0]):
+            if self.totalAutocorrelationCurve[i] < 0:
+                rectifiedAutocorrelation[i] = 0
+        peaks = np.asarray(find_peaks(rectifiedAutocorrelation))  # weird syntax due to 2.x/3.x compatibility issues here todo: rewrite for 3.x
+        peaks = peaks[0] + 1  # peaks = lags
+
+        inharmonicSum = 0.0
+        inharmonicPeaks = []
+        for i in range(len(peaks)):
+            remainder1 = 16 % peaks[i]
+            if remainder1 > 16 * alpha and remainder1 < 16 * (1-alpha):
+                inharmonicSum += rectifiedAutocorrelation[peaks[i] - 1]  # add magnitude of inharmonic peaks
+                inharmonicPeaks.append(rectifiedAutocorrelation[i])
+
+        harmonicity = math.exp((-0.25 * len(peaks) * inharmonicSum / float(rectifiedAutocorrelation.max())))
+        return harmonicity
 
     def _getSymmetry(self, part):
         # Calculate symmetry for any number of parts.
