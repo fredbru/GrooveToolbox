@@ -158,7 +158,7 @@ class RhythmFeatures():
         #self.getHiSyncness()
         self.autocorrelationSkew = self.getAutocorrelationSkew()
         self.autocorrelationMaxAmplitude = self.getAutocorrelationMaxAmplitude()
-        self.autocorrelationCentroid() = self.getAutocorrelationCentroid()
+        self.autocorrelationCentroid = self.getAutocorrelationCentroid()
         # self.getAutocorrelationHarmonicity()
         self.totalSymmetry = self.getTotalSymmetry()
 
@@ -435,10 +435,10 @@ class RhythmFeatures():
                 totalWeights += self.totalAutocorrelationCurve[i]
                 centroidSum += addition
         if totalWeights != 0:
-            centroid = centroidSum / totalWeights
+            self.autocorrelationCentroid = centroidSum / totalWeights
         else:
-            centroid = self.groove10Parts.shape[0] / 2
-        return centroid
+            self.autocorrelationCentroid = self.groove10Parts.shape[0] / 2
+        return self.autocorrelationCentroid
 
     def getAutocorrelationHarmonicity(self):
         #todo

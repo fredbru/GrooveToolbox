@@ -3,6 +3,7 @@
 
 from LoadGrooveFromBFDPalette import *
 from Groove import *
+from SimilarityMetrics import *
 
 fileName = "Soul Blues.bfd3pal"
 grooveName = "Soul Blues 18"
