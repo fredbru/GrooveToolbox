@@ -536,7 +536,7 @@ class MicrotimingFeatures():
         swungNotePositions = list(range(self.averageTimingMatrix.shape[0]))[3::4]
 
         swingCount = 0.0
-        secondQuaverLengths = np.zeros([self.averageTimingMatrix.shape[0]/4])
+        secondQuaverLengths = np.zeros([int(self.averageTimingMatrix.shape[0]/4)])
         semiquaverStepLength = 60.0 / self.tempo / 4.0
 
         j = 0
