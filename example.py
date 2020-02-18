@@ -9,5 +9,5 @@ fileName = "Soul Blues.bfd3pal"
 grooveName = "Soul Blues 18"
 
 hitsMatrix, timingMatrix, tempo = getGrooveFromBFDPalette(fileName, grooveName)
-
+print(timingMatrix)
 JB20 = NewGroove(hitsMatrix, timingMatrix, tempo, velocityType="None", extractFeatures=True)

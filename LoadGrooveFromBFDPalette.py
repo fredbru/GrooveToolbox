@@ -89,10 +89,10 @@ def getGroovesFromBundle(grooveBundle):
 
         # round to semiquavers (0.25)
         multipliedHit = allHits[:,0]*4.0
-        roundedHit = multipliedHit.round(decimals=0) / 4.0
-        microtimingVariationBeats = allHits[:, 0] - roundedHit
+        roundedHits = multipliedHit.round(decimals=0) / 4.0
+        microtimingVariationBeats = allHits[:, 0] - roundedHits
         microtimingVariationMS = microtimingVariationBeats * 60.0 * 1000 / tempo
-        allHits[:, 0] = roundedHit
+        allHits[:, 0] = roundedHits
         allHits[:, 3] = microtimingVariationMS
         roundedGrooveEvents = allHits
 
