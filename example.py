@@ -2,12 +2,19 @@
 # Load a groove from a BFD palette file. Calculate all rhythm and microtiming features from it.
 
 from LoadGrooveFromBFDPalette import *
+from LoadGrooveFromMIDI import *
 from Groove import *
 from SimilarityMetrics import *
 
-fileName = "Soul Blues.bfd3pal"
+fileName = "JB_7.midi"
 grooveName = "Soul Blues 18"
 
-hitsMatrix, timingMatrix, tempo = getGrooveFromBFDPalette(fileName, grooveName)
-print(timingMatrix)
-JB20 = NewGroove(hitsMatrix, timingMatrix, tempo, velocityType="None", extractFeatures=True)
+hitsMatrixBFD, timingMatrixBFD, tempoBFD = getGrooveFromBFDPalette("Stanton Moore JB.bfd3pal",
+                                                                   "JB 7")
+
+hitsMatrixMIDI, timingMatrixMIDI, tempo = getGrooveFromMIDIFile("MIDI/JB_7.mid", tempo=120)
+
+print(timingMatrixBFD)
+print(timingMatrixMIDI)
+
+JB20 = NewGroove(hitsMatrixMIDI, timingMatrixMIDI, tempo, velocityType="None", extractFeatures=True)
