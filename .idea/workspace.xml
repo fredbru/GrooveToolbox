@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b8dbde8-48c5-418f-bc46-bc547fc60bbf" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/DB.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/JB7.ADT.txt" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/DB.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/JB 7.ADT.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/JB7.ADT.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Groove.py" afterPath="$PROJECT_DIR$/Groove.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LoadGrooveFromAudio.py" afterPath="$PROJECT_DIR$/LoadGrooveFromAudio.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README" afterPath="$PROJECT_DIR$/README" />
     </list>
     <ignored path="GrooveToolbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,10 +41,10 @@
       <file leaf-file-name="LoadGrooveFromAudio.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LoadGrooveFromAudio.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+            <state relative-caret-position="515">
+              <caret line="36" column="40" selection-start-line="36" selection-start-column="40" selection-end-line="36" selection-end-column="40" />
               <folding>
-                <element signature="e#0#22#0" expanded="true" />
+                <element signature="e#97#119#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -54,7 +53,7 @@
       <file leaf-file-name="Groove.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Groove.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
+            <state relative-caret-position="459">
               <caret line="27" column="72" selection-start-line="27" selection-start-column="72" selection-end-line="27" selection-end-column="72" />
               <folding>
                 <element signature="e#272#290#0" expanded="true" />
@@ -141,10 +140,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="788" />
-    <option name="y" value="80" />
-    <option name="width" value="1132" />
-    <option name="height" value="970" />
+    <option name="x" value="963" />
+    <option name="y" value="52" />
+    <option name="width" value="947" />
+    <option name="height" value="1028" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -325,7 +324,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="788" y="80" width="1132" height="970" extended-state="0" />
+    <frame x="963" y="52" width="947" height="1028" extended-state="4" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17761807" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -845,7 +844,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Groove.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
+        <state relative-caret-position="459">
           <caret line="27" column="72" selection-start-line="27" selection-start-column="72" selection-end-line="27" selection-end-column="72" />
           <folding>
             <element signature="e#272#290#0" expanded="true" />
@@ -855,10 +854,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/LoadGrooveFromAudio.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        <state relative-caret-position="515">
+          <caret line="36" column="40" selection-start-line="36" selection-start-column="40" selection-end-line="36" selection-end-column="40" />
           <folding>
-            <element signature="e#0#22#0" expanded="true" />
+            <element signature="e#97#119#0" expanded="true" />
           </folding>
         </state>
       </provider>
