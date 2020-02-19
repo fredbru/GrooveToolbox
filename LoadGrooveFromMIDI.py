@@ -44,7 +44,7 @@ def _getAllHitInfo(midi, tempo):
             elif note.pitch in hihatClosedPitches:
                 hits[i, 2] = 2
             i += 1
-
+    print(hits)
     hits[:, 0] = hits[:, 0] / 60.0 * tempo
     hits[:, 1] = hits[:, 1] / 127.0
     multipliedHit = hits[:, 0] * 4.0
