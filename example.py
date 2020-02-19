@@ -12,7 +12,7 @@ grooveName = "Soul Blues 18"
 hitsMatrixBFD, timingMatrixBFD, tempoBFD = getGrooveFromBFDPalette("Stanton Moore JB.bfd3pal",
                                                                    "JB 7")
 
-hitsMatrixMIDI, timingMatrixMIDI, tempo = getGrooveFromMIDIFile("MIDI/JB_7.mid", tempo=120)
+hitsMatrixMIDI, timingMatrixMIDI, tempo = getGrooveFromMIDIFile("MIDI/JB_7.mid", tempo=120, keymap="BFD")
 
 print(timingMatrixBFD)
 print(timingMatrixMIDI)
