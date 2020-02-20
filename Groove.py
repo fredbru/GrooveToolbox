@@ -20,14 +20,14 @@ from scipy.signal import find_peaks
 import math
 
 class NewGroove():
-    def __init__(self, hitsMatrix, timingMatrix, tempo, extractFeatures=True, velocityType="Regular"):
-        # Filename - name of groove file to load
+    def __init__(self, hitsMatrix, timingMatrix, tempo, extractFeatures=True, velocityType="Regular", name="Groove"):
         # extractFeatures - if True (default), extract all features upon groove creation.
         # Set false if you don't need all features - instead retrieve as and when you need them
 
         np.set_printoptions(precision=2) #todo: put this somewhere else?
         self.groove10Parts = hitsMatrix
         self.timingMatrix = timingMatrix
+        self.name = name
 
 
         if velocityType == "None":
