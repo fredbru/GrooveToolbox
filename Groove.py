@@ -146,7 +146,6 @@ class RhythmFeatures():
 
     def getAllFeatures(self):
         # Get all standard features in one go
-        print("\n   Rhythm features:")
         self.combinedSyncopation = self.getCombinedSyncopation()
         self.polyphonicSyncopation =self.getPolyphonicSyncopation()
         self.lowSyncopation = self.getLowSyncopation()
@@ -156,14 +155,16 @@ class RhythmFeatures():
         self.midDensity = self.getMidDensity()
         self.highDensity = self.getHighDensity()
         self.totalDensity = self.getTotalDensity()
-        #self.getHiness()
-        #self.getHiSyncness()
+        self.hiness = self.getHiness()
+        self.hisyncness = self.getHiSyncness()
         self.autocorrelationSkew = self.getAutocorrelationSkew()
         self.autocorrelationMaxAmplitude = self.getAutocorrelationMaxAmplitude()
         self.autocorrelationCentroid = self.getAutocorrelationCentroid()
         self.getAutocorrelationHarmonicity()
         self.totalSymmetry = self.getTotalSymmetry()
 
+    def printAllFeatures(self):
+        print("\n   Rhythm features:")
         print("Combined Mono Syncopation = " + str(self.combinedSyncopation))
         print("Polyphonic Syncopation = " + str(self.polyphonicSyncopation))
         print("Low Syncopation = " + str(self.lowSyncopation))
@@ -380,12 +381,21 @@ class RhythmFeatures():
         return self.totalDensity
 
     def getHiness(self):
-        #todo
-        pass
+        # might need to x total density by 10 as it's not summed over one line
+        self.hiness = (float(self.getHighDensity()) / float(self.getTotalDensity()))
+        return self.hiness
 
     def getHiSyncness(self):
-        #todo
-        pass
+        highDensity = self.getHighDensity()
+        highParts = np.vstack([self.groove10Parts[:,2], self.groove10Parts[:,3], self.groove10Parts[:,4],
+                             self.groove10Parts[:,5],self.groove10Parts[:,6]])
+
+        if highDensity != 0.:
+            self.hisyncness = float(self.getHighSyncopation()) / float(highDensity)
+        else:
+            self.hisyncness = 0
+        return self.hisyncness
+
 
     def _getAutocorrelationCurve(self, part):
         # Return autocorrelation curve for a single part.
@@ -396,9 +406,10 @@ class RhythmFeatures():
         autocorrelation = ax.lines[5].get_data()[1]
         plt.plot(range(1, self.groove10Parts.shape[0]+1),
                  autocorrelation)  # plots from 1 to 32 inclusive - autocorrelation starts from 1 not 0 - 1-32
-        plt.cla()
         plt.clf()
+        plt.cla()
         plt.close()
+
         return np.nan_to_num(autocorrelation)
 
     def getTotalAutocorrelationCurve(self):
@@ -408,8 +419,9 @@ class RhythmFeatures():
         for i in range(self.groove10Parts.shape[1]):
             self.totalAutocorrelationCurve += self._getAutocorrelationCurve(self.groove10Parts[:,i])
         ax = autocorrelation_plot(self.totalAutocorrelationCurve)
-        plt.figure()
-        plt.plot(range(1,33),self.totalAutocorrelationCurve)
+
+        #plt.figure()
+        #plt.plot(range(1,33),self.totalAutocorrelationCurve)
         return self.totalAutocorrelationCurve
 
     def getAutocorrelationSkew(self):
@@ -506,6 +518,7 @@ class MicrotimingFeatures():
         self.ontopness = self.getOntopness()
         self.pushness = self.getPushness()
 
+    def printAllFeatures(self):
         print("\n   Microtiming features:")
         print('Swing Ratio = ' + str(self.swingRatio))
         print("Swingness = " + str(self.swingness))
