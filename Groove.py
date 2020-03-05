@@ -44,8 +44,8 @@ class NewGroove():
         self.microtimingFeatures = MicrotimingFeatures(self.timingMatrix, tempo)
 
         if extractFeatures:
-            self.rhythmFeatures.getAllFeatures()
-            self.microtimingFeatures.getAllFeatures()
+            self.rhythmFeatures.calculateAllFeatures()
+            self.microtimingFeatures.calculateAllFeatures()
 
     def _groupGroove5KitParts(self):
         # Group kit parts into 5 polyphony levels
@@ -144,7 +144,7 @@ class RhythmFeatures():
 
         #todo: Do I want to list names of class variables in here? So user can see them easily?
 
-    def getAllFeatures(self):
+    def calculateAllFeatures(self):
         # Get all standard features in one go
         self.combinedSyncopation = self.getCombinedSyncopation()
         self.polyphonicSyncopation =self.getPolyphonicSyncopation()
@@ -160,8 +160,14 @@ class RhythmFeatures():
         self.autocorrelationSkew = self.getAutocorrelationSkew()
         self.autocorrelationMaxAmplitude = self.getAutocorrelationMaxAmplitude()
         self.autocorrelationCentroid = self.getAutocorrelationCentroid()
-        self.getAutocorrelationHarmonicity()
+        self.autocorrelationHarmonicity = self.getAutocorrelationHarmonicity()
         self.totalSymmetry = self.getTotalSymmetry()
+
+    def getAllFeatures(self):
+        return np.hstack([self.combinedSyncopation,self.polyphonicSyncopation,self.lowSyncopation, self.midSyncopation,
+                          self.highSyncopation, self.lowDensity,  self.midDensity, self.highDensity, self.totalDensity,
+                          self.hiness, self.hisyncness, self.autocorrelationSkew, self.autocorrelationMaxAmplitude,
+                          self.autocorrelationCentroid, self.autocorrelationHarmonicity, self.totalSymmetry])
 
     def printAllFeatures(self):
         print("\n   Rhythm features:")
@@ -176,6 +182,7 @@ class RhythmFeatures():
         print("Autocorrelation Skewness = " + str(self.autocorrelationSkew))
         print("Autocorrelation Max Amplitude = " + str(self.autocorrelationMaxAmplitude))
         print("Autocorrelation Centroid = " + str(self.autocorrelationCentroid))
+        print("Autocorrelation Harmonicity = " + str(self.autocorrelationHarmonicity))
         print("Symmetry = " + str(self.totalSymmetry))
 
 
@@ -506,8 +513,7 @@ class MicrotimingFeatures():
         self.averageTimingMatrix = self.getAverageTimingDeviation()
         self._getSwingInfo()
 
-
-    def getAllFeatures(self):
+    def calculateAllFeatures(self):
         # Get all microtiming features.
 
         self.isSwung = self.checkIfSwung()
@@ -517,6 +523,10 @@ class MicrotimingFeatures():
         self.laidbackness = self.getLaidbackness()
         self.ontopness = self.getOntopness()
         self.pushness = self.getPushness()
+
+    def getAllFeatures(self):
+        #todo: doesn't retrn isSwung or microtimingeventprofile
+        return np.hstack([self.swingness, self.swingRatio, self.laidbackness, self.ontopness, self.pushness])
 
     def printAllFeatures(self):
         print("\n   Microtiming features:")
