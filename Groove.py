@@ -391,7 +391,7 @@ class RhythmFeatures():
         self.highSyncopation = self.getSyncopation1Part(highParts)
         return self.highSyncopation
 
-    def getDensity(self, part):
+    def getDensity(self, part): #todo: rename to be consistent with other features? that use 1 part vs all parts functions
         # Get density of any single kit part or part group. Difference to total density is that you divide by
         # number of metrical steps, instead of total number of possible onsets in the pattern
 
@@ -459,10 +459,14 @@ class RhythmFeatures():
         # Uses monophonic syncopation measure
         density = self.getDensity(part)
         syncopation = self.getSyncopation1Part(part)
-        complexity = math.sqrt(pow(density, 2) + pow(syncopation,2)) #todo:finish
+        complexity = math.sqrt(pow(density, 2) + pow(syncopation,2))
+        return complexity
 
     def getTotalComplexity(self):
-        pass
+        density = self.getTotalDensity()
+        syncopation = self.getCombinedSyncopation()
+        self.totalComplexity = math.sqrt(pow(density, 2) + pow(syncopation,2))
+        return self.totalComplexity
 
     def _getAutocorrelationCurve(self, part):
         # Return autocorrelation curve for a single part.
