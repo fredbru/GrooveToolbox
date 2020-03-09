@@ -14,7 +14,8 @@ hitsMatrixBFD, timingMatrixBFD, tempoBFD = getGrooveFromBFDPalette("Stanton Moor
 
 #hitsMatrixMIDI, timingMatrixMIDI, tempo = getGrooveFromMIDIFile("MIDI/JB_7.mid", tempo=120, keymap="BFD")
 
-JB20 = NewGroove(hitsMatrixBFD, timingMatrixBFD, tempoBFD, velocityType="Linear", extractFeatures=True, name="Stanton Moore JB")
-print(JB20.rhythmFeatures.getAverageIntensity(JB20.groove10Parts[:,1]))
+JB20 = NewGroove(hitsMatrixBFD, timingMatrixBFD, tempoBFD, velocityType="None", extractFeatures=True, name="Stanton Moore JB")
+print(JB20.rhythmFeatures.getTotalWeakToStrongRatio())
+print(JB20.groove10Parts[:,0])
 
 #plotGrooveMatrix(JB20)

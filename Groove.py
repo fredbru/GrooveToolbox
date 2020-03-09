@@ -343,9 +343,33 @@ class RhythmFeatures():
         self.totalAverageIntensity = self.getAverageIntensity(self.groove10Parts)
         return self.totalAverageIntensity
 
+    def getWeakToStrongRatio(self, part):
+        weakHitCount = 0.0
+        strongHitCount = 0.0
+
+        strongPositions = [0,4,8,12,16,20,24,28]
+        weakPositions = [1,2,3,5,6,7,9,10,11,13,14,15,17,18,19,21,22,23,25,26,27,29,30,31]
+
+        hitsCount = np.count_nonzero(part)
+        hitIndexes = np.nonzero(part)
+        for i in range(hitsCount):
+            if len(hitIndexes) > 1:
+                index = hitIndexes[0][i], hitIndexes[1][i]
+            else:
+                index = [hitIndexes[0][i]]
+            if index[0] in strongPositions:
+                strongHitCount += part[index]
+            if index[0] in weakPositions:
+                weakHitCount += part[index]
+        weakToStrongRatio = weakHitCount/strongHitCount
+        return weakToStrongRatio
+
+    def getTotalWeakToStrongRatio(self): #todo: test
+        self.totalWeakToStrongRatio = self.getWeakToStrongRatio(self.groove10Parts)
+        return self.totalWeakToStrongRatio
+
     def getLowSyncopation(self):
         # Get syncopation of low part (kick drum)
-
         self.lowSyncopation = self.getSyncopation1Part(self.groove10Parts[:,0])
         return self.lowSyncopation
 
