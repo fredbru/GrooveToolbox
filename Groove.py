@@ -319,6 +319,30 @@ class RhythmFeatures():
                     abs(metricalProfile[(i + 2) % 32] - metricalProfile[i]))) # * part[i]))
         return syncopation
 
+    def getAverageIntensity(self, part):
+        # Get average loudness for any signle part or group of parts. Will return 1 for binary loop, otherwise calculate
+        # based on velocity mode chosen (transform or regular)
+
+        # first get all non-zero hits. then divide by number of hits
+
+        hitIndexes = np.nonzero(part)
+        total = 0.0
+        hitsCount = np.count_nonzero(part)
+
+        for i in range(hitsCount):
+            if len(hitIndexes) > 1:
+                index = hitIndexes[0][i], hitIndexes[1][i]
+            else:
+                index = hitIndexes[0][i]
+            total += part[index]
+        average = total / hitsCount
+        return average
+
+    def getTotalAverageIntensity(self):
+        # Get average loudness for every hit in a loop
+        self.totalAverageIntensity = self.getAverageIntensity(self.groove10Parts)
+        return self.totalAverageIntensity
+
     def getLowSyncopation(self):
         # Get syncopation of low part (kick drum)
 

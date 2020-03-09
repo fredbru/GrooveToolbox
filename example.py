@@ -10,13 +10,11 @@ from PlotGrooveData import *
 fileName = "JB_7.midi"
 grooveName = "Soul Blues 18"
 
-#hitsMatrixBFD, timingMatrixBFD, tempoBFD = getGrooveFromBFDPalette("Stanton Moore JB.bfd3pal",                                                                   "JB 7")
+hitsMatrixBFD, timingMatrixBFD, tempoBFD = getGrooveFromBFDPalette("Stanton Moore JB.bfd3pal", "JB 7")
 
-hitsMatrixMIDI, timingMatrixMIDI, tempo = getGrooveFromMIDIFile("MIDI/JB_7.mid", tempo=120, keymap="BFD")
+#hitsMatrixMIDI, timingMatrixMIDI, tempo = getGrooveFromMIDIFile("MIDI/JB_7.mid", tempo=120, keymap="BFD")
 
-#print(timingMatrixBFD)
-print(timingMatrixMIDI)
+JB20 = NewGroove(hitsMatrixBFD, timingMatrixBFD, tempoBFD, velocityType="Linear", extractFeatures=True, name="Stanton Moore JB")
+print(JB20.rhythmFeatures.getAverageIntensity(JB20.groove10Parts[:,1]))
 
-JB20 = NewGroove(hitsMatrixMIDI, timingMatrixMIDI, tempo, velocityType="None", extractFeatures=True, name="Stanton Moore JB 20")
-
-plotGrooveMatrix(JB20,)
+#plotGrooveMatrix(JB20)
