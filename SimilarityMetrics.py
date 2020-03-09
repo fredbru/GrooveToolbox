@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-def weightedHammingDistance(grooveA, grooveB, numberOfParts=10):
+def weightedHammingDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="Off"):
     if numberOfParts == 3:
         a = grooveA.groove3Parts
         b = grooveB.groove3Parts
@@ -12,10 +12,17 @@ def weightedHammingDistance(grooveA, grooveB, numberOfParts=10):
         a = grooveA.groove10Parts
         b = grooveB.groove10Parts
 
+    if beatWeighting == "On":
+        a = _weightGroove(a)
+        b = _weightGroove(b)
+
+
+
     x = (a.flatten()-b.flatten())
     return math.sqrt(np.dot(x, x.T))
 
-def getFlexibleEuclideanDistance(grooveA, grooveB, numberOfParts=10):
+
+def flexibleEuclideanDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="Off"):
     # get euclidean distance, but with 1 metrical distance lookahead/back
     # 1st thing - recreate euclidean distance with iteration (not array-wise calculation)
     #
@@ -30,6 +37,10 @@ def getFlexibleEuclideanDistance(grooveA, grooveB, numberOfParts=10):
         aTiming = grooveA.timingMatrix
         b = grooveB.groove10Parts
         bTiming = grooveB.timingMatrix
+
+    if beatWeighting == "On":
+        a = _weightGroove(a)
+        b = _weightGroove(b)
 
     timingDifference = np.nan_to_num(aTiming - bTiming)
 
@@ -91,3 +102,19 @@ def getFlexibleEuclideanDistance(grooveA, grooveB, numberOfParts=10):
         flexDistance = math.sqrt(np.dot(x.flatten(),x.flatten().T))
     return flexDistance
     # go through a, and if hit[i] in b = 0, check hit [i+1] and [i-1]
+
+def _weightGroove(self, groove):
+    # Awareness profile weighting for hamming/flexible distance based on Gomez-Marin metrical profile.
+    # The rhythms in each beat of a bar have different significance based on GTTM.
+    beatAwarenessWeighting = [1,1,1,1,
+                              0.27,0.27,0.27,0.27,
+                              0.22,0.22,0.22,0.22,
+                              0.16,0.16,0.16,0.16,
+                              1,1,1,1,
+                              0.27,0.27,0.27,0.27,
+                              0.22,0.22,0.22,0.22,
+                              0.16,0.16,0.16,0.16,]
+
+    for i in range(groove.shape[1]):
+        groove[:,i] = groove[:,i] * beatAwarenessWeighting
+    return groove
