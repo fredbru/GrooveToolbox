@@ -188,6 +188,7 @@ class RhythmFeatures():
 
     def getCombinedSyncopation(self):
         # Calculate syncopation as summed across all kit parts.
+        # todo: normalize this? (like with 1 part syncopation)
 
         self.combinedSyncopation = 0.0
         for i in range(self.groove10Parts.shape[1]):
@@ -303,21 +304,23 @@ class RhythmFeatures():
     def getSyncopation1Part(self, part):
         # Using Longuet-Higgins  and  Lee 1984 metric profile, get syncopation of 1 monophonic line.
         # Assumes it's a drum loop - loops round.
+        # Normalized against maximum syncopation: syncopation score of pattern with all pulses of lowest metrical level
+        # at maximum amplitude (=30 for 2 bar 4/4 loop)
 
         metricalProfile = [5, 1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1,
                                    5, 1, 2, 1, 3, 1, 2, 1, 4, 1, 2, 1, 3, 1, 2, 1]
-
+        maximumSyncopation = 30.0
         syncopation = 0.0
         for i in range(len(part)):
             if part[i] != 0:
                 if part[(i + 1) % 32] == 0.0 and metricalProfile[(i + 1) % 32] > metricalProfile[i]:
                     syncopation = float(syncopation + (
-                    abs(metricalProfile[(i + 1) % 32] - metricalProfile[i]))) # * part[i]))
+                    abs(metricalProfile[(i + 1) % 32] - metricalProfile[i]))) # * part[i])) #todo: velocity here?
 
                 elif part[(i + 2) % 32] == 0.0 and metricalProfile[(i + 2) % 32] > metricalProfile[i]:
                     syncopation = float(syncopation + (
                     abs(metricalProfile[(i + 2) % 32] - metricalProfile[i]))) # * part[i]))
-        return syncopation
+        return syncopation / maximumSyncopation
 
     def getAverageIntensity(self, part):
         # Get average loudness for any signle part or group of parts. Will return 1 for binary loop, otherwise calculate
@@ -451,6 +454,15 @@ class RhythmFeatures():
             self.hisyncness = 0
         return self.hisyncness
 
+    def getComplexity(self, part):
+        # Get complexity of one part. Calculated following Sioros and Guedes (2011) as combination of denisty and syncopation
+        # Uses monophonic syncopation measure
+        density = self.getDensity(part)
+        syncopation = self.getSyncopation1Part(part)
+        complexity = math.sqrt(pow(density, 2) + pow(syncopation,2)) #todo:finish
+
+    def getTotalComplexity(self):
+        pass
 
     def _getAutocorrelationCurve(self, part):
         # Return autocorrelation curve for a single part.
