@@ -1,3 +1,6 @@
+# 3 Similarity measures for comparing drum patterns: velocity-weighted Hamming distance, fuzzy Hamming distance and
+# structural similarity. See paper for more detailed descriptions. Optional beat awareness weighting for Hamming.
+
 import numpy as np
 import math
 
@@ -22,9 +25,9 @@ def weightedHammingDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="O
     return math.sqrt(np.dot(x, x.T))
 
 
-def flexibleEuclideanDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="Off"):
-    # get euclidean distance, but with 1 metrical distance lookahead/back
-    # 1st thing - recreate euclidean distance with iteration (not array-wise calculation)
+def fuzzyHammingDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="Off"):
+    # Get fuzzy Hamming distance as velocity weighted Hamming distance, but with 1 metrical distance lookahead/back
+    # and microtiming weighting
     #
     if numberOfParts == 3:
         a = grooveA.groove3Parts
@@ -51,7 +54,7 @@ def flexibleEuclideanDistance(grooveA, grooveB, numberOfParts=10, beatWeighting=
 
     timingDifferenceWeight = timingDifference / 125.
     timingDifferenceWeight = 1+np.absolute(timingDifferenceWeight)
-    singletimingDifferenceWeight = 0
+    singletimingDifferenceWeight = 400
 
     for j in range(numberOfParts):
         for i in range(31):
@@ -99,12 +102,25 @@ def flexibleEuclideanDistance(grooveA, grooveB, numberOfParts=10, beatWeighting=
                     x[i, j] = (a[i, j] - b[i, j]) * timingDifferenceWeight[i, j]
 
 
-        flexDistance = math.sqrt(np.dot(x.flatten(),x.flatten().T))
-    return flexDistance
+        fuzzyDistance = math.sqrt(np.dot(x.flatten(),x.flatten().T))
+    return fuzzyDistance
     # go through a, and if hit[i] in b = 0, check hit [i+1] and [i-1]
+def structuralSimilarityDistance(grooveA, grooveB):
+    # Simialrity calculated between reduced versions of loops, measuring whether onsets occur in
+    # roughly similar parts of two loops. Calculated as hamming distance between reduced versions.
+    # of grooves
+    a = grooveA.getReducedGroove()
+    b = grooveB.getReducedGroove()
+    rowsToRemove = [1,2,3,5,6,7,9,10,11,13,14,15,17,18,19,21,22,23,25,26,27,29,30,31]
+    reducedA = np.delete(a, rowsToRemove, axis=0)
+    reducedB = np.delete(b, rowsToRemove, axis=0)
+    x = (a.flatten()-b.flatten())
+    structuralDifference = math.sqrt(np.dot(x, x.T))
+    return structuralDifference
+
 
 def _weightGroove(self, groove):
-    # Awareness profile weighting for hamming/flexible distance based on Gomez-Marin metrical profile.
+    # Awareness profile weighting for hamming/fuzzy distance based on Gomez-Marin metrical profile.
     # The rhythms in each beat of a bar have different significance based on GTTM.
     beatAwarenessWeighting = [1,1,1,1,
                               0.27,0.27,0.27,0.27,
