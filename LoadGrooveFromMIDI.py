@@ -65,7 +65,7 @@ def _getAllHitInfo(midi, tempo, keymap):
 
 def _setMIDIKeyMap(keymap):
     #todo: how to deal with custom keymaps?
-    # Set key map for MIDI transcription. Only deals with 10 core drum kit parts - kick, snare, closed/pedal hihat,
+    # Set key map to be used for MIDI transcription. Only deals with 10 core drum kit parts - kick, snare, closed/pedal hihat,
     # open hihat, ride, crash, extra cymbal (any other cymbal e.g. china, splash), low tom, mid tom, high tom. All other
     # percussion is ignored
     # See here for a link to General MIDI key map to see exactly which instruments are mapped where:

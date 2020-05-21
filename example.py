@@ -14,8 +14,12 @@ hitsMatrixBFD, timingMatrixBFD, tempoBFD = getGrooveFromBFDPalette("Stanton Moor
 
 #hitsMatrixMIDI, timingMatrixMIDI, tempo = getGrooveFromMIDIFile("MIDI/JB_7.mid", tempo=120, keymap="BFD")
 
-JB20 = NewGroove(hitsMatrixBFD, timingMatrixBFD, tempoBFD, velocityType="None", extractFeatures=True, name="Stanton Moore JB")
-print(JB20.rhythmFeatures.getTotalWeakToStrongRatio())
-print(JB20.groove10Parts[:,0])
+JB7 = NewGroove(hitsMatrixBFD, timingMatrixBFD, tempoBFD, velocityType="None", extractFeatures=True, name="Stanton Moore JB")
+# JB7.rhythmFeatures.getAllFeatures()
+# JB7.rhythmFeatures.printAllFeatures()
 
-#plotGrooveMatrix(JB20)
+hits2, timing2, tempo2 = getGrooveFromBFDPalette("Jazz Walk Sticks.bfd3pal", "Jazz Walk Sticks 2")
+JWS2 = NewGroove(hits2, timing2, tempo2, velocityType="None", extractFeatures=True, name="Stanton Moore JB9")
+
+print(weightedHammingDistance(JB7, JWS2))
+print(structuralSimilarity(JB7, JWS2))

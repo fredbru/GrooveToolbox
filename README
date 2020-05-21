@@ -1,3 +1,10 @@
+DEMO VERSION OF GROOVETOOLBOX FOR ISMIR SUBMISSION
+This folder contains a stripped-down version of the current working version of the GrooveToolbox, provided as a reference to the reviewers. It has most of the GrooveToolbox's functionality but, various files and functions have been removed as they contain potentially identifying information of the authors.
+
+Removed files include LoadGrooveFromBFDPalette.py - for loading BFD3 format Groove files (the additional package of BFD groove parsing tools provided with the GrooveToolbox is removed also), and more examples.
+
+One example MIDI drum loop is provided, and an example script for loading this MIDI file and extracting all the features from it.
+
 Python version: 3.5.x or 2.7.x
 
 Dependencies:
@@ -9,28 +16,29 @@ Matplotlib
 Files + folders:
 
 example.py
-Example script for using the toolbox. Loads a groove from within a palette file. Extracts hit and timing information, then calculates all rhythm and microtiming features and prints them on the command line.
+Example script for using the toolbox. Loads a loop from an example MIDI file. Extracts hit and timing information, then calculates all rhythm and microtiming features and prints them on the command line.
 
 Groove.py
-Class containing Groove class with RhythmFeatures and MicrotimingFeatures subclasses. Contains all feature extraction functions for analysing one groove. If extractFeatures = True, automatically calculates all features upon loading the groove. Supports 3 velocity types: None (all velocities = 1), Regular (velocity from 0-1 taken directly from BFD palette), Transform (velocity scaled with root 5 function to reduce it's impact on feature values). Transform velocity tends to give the best results for feature values.
+Class containing Groove class with RhythmFeatures and MicrotimingFeatures subclasses. Contains all feature extraction functions for analysing one groove. If extractFeatures = True, automatically calculates all features upon loading the groove. Supports 3 velocity types: None (all velocities = 1), Regular (velocity from 0-1 taken directly from MIDI/BFD Groove file), Transform (velocity scaled with root 5 function to reduce its impact on feature values).
 
 As well as calculating all the features in one go, it is possible to retrieve them individually e.g.:
 totalDensity = MyGroove.rhythmFeatures.getTotalDensity()
 swingRatio = MyGroove.microtimingFeatures.getSwingRatio()
 
 LoadGrooveFromBFDPalette.py
-Contains a set of functions for parsing a single BFD groove using some files in the fx folder. Extracts two matricies for each groove, one for velocities at each hit position and another for microtiming deviation at each hit position.
+Contains a set of functions for parsing a single BFD groove using some files in the fx folder. Extracts two matricies for each groove, one for velocities at each hit position and another for microtiming deviation at each hit position. Use getGroovesFromBundle to load all grooves within a bundle, or getGrooveFromBFDPalette to get a single groove from within a bundle file.
 
-Grooves folder:
-To add new palette files to analyse just place them within this folder. Palettes should be in .bfd3pal format.
+LoadGrooveFromMIDI.py
+Load a MIDI drum loop into GrooveToolbox velocity and microtiming arrays. Example usage:
+from LoadGrooveFromMIDI import *
+hitsMatrixMIDI, timingMatrixMIDI, tempo = getGrooveFromMIDIFile("MyLoop.mid", tempo=120, keymap="BFD")
 
-fx folder:
-Contains various scripts and functions for parsing BFD groove files from the xml palette format. Not written by me.
+PlotGrooveData.py
+Plot piano-roll representation of a groove using matplotlib. Usage:
+from PlotGrooveData import *
+plotGrooveMatrix(JB20)
 
-Notes as of 7/2/20:
-Not all rhythm features are currently implemented
-Similarity metrics also not implemented yet
-Currently only works for BFD format files - not yet supporting MIDI or audio data input
+SimilarityMetrics.py
 
 
 LOADING FROM AUDIO

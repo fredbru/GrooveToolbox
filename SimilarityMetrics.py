@@ -104,7 +104,7 @@ def fuzzyHammingDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="Off"
 
         fuzzyDistance = math.sqrt(np.dot(x.flatten(),x.flatten().T))
     return fuzzyDistance
-    # go through a, and if hit[i] in b = 0, check hit [i+1] and [i-1]
+
 def structuralSimilarityDistance(grooveA, grooveB):
     # Simialrity calculated between reduced versions of loops, measuring whether onsets occur in
     # roughly similar parts of two loops. Calculated as hamming distance between reduced versions.
@@ -120,7 +120,7 @@ def structuralSimilarityDistance(grooveA, grooveB):
 
 
 def _weightGroove(self, groove):
-    # Awareness profile weighting for hamming/fuzzy distance based on Gomez-Marin metrical profile.
+    # Metrical awareness profile weighting for hamming distance.
     # The rhythms in each beat of a bar have different significance based on GTTM.
     beatAwarenessWeighting = [1,1,1,1,
                               0.27,0.27,0.27,0.27,

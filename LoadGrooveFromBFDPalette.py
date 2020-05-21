@@ -69,7 +69,6 @@ def getAllHitInfo(hits, grooveLength):
             allEvents[i,2] = 8
         if kitPieceSlot == hiTomIndex:
             allEvents[i,2] = 9
-
     return allEvents
 
 def getGroovesFromBundle(grooveBundle):
@@ -79,6 +78,7 @@ def getGroovesFromBundle(grooveBundle):
     :param grooveDom: groove object from .xml
     :return:
     """
+    #todo: write this properly
     allGroovesHitInfo = []
     allGrooveNames =[]
 
@@ -127,3 +127,52 @@ def getGrooveFromBFDPalette(filename, grooveName):
         hitsMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,1]
 
     return hitsMatrix, timingMatrix, tempo
+
+def getAllGroovesFromBFDPalette(filename):
+    pathToPalettes = ""
+    paletteFileName = filename
+
+    hitsMatricies = []
+    timingMatricies = []
+    names = []
+    bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
+    grooveBundle = getGrooveNodes(bundleNode)
+
+    allGroovesHitInfo, allGrooveNames, tempo = getGroovesFromBundle(grooveBundle)
+
+    for i in range(len(allGroovesHitInfo)):
+        hitsMatrix = np.zeros([32, 10])
+        timingMatrix = np.zeros([32, 10])
+        timingMatrix[:] = np.nan
+
+        singleGrooveHitInfo = allGroovesHitInfo[i]
+        for j in range(singleGrooveHitInfo.shape[0]):
+            timePosition = int(singleGrooveHitInfo[j, 0] * 4)
+            kitPiecePosition = int(singleGrooveHitInfo[j, 2])
+            timingMatrix[timePosition % 32, kitPiecePosition] = singleGrooveHitInfo[j, 3]
+            hitsMatrix[timePosition % 32, kitPiecePosition] = singleGrooveHitInfo[j, 1]
+        hitsMatricies.append(hitsMatrix)
+        timingMatricies.append(timingMatrix)
+    return hitsMatricies, timingMatricies, allGrooveNames
+
+def getGrooveListFormat(filename, grooveName):
+    pathToPalettes = "Grooves/"
+    paletteFileName = filename
+    bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
+    grooveBundle = getGrooveNodes(bundleNode)
+
+    allGroovesHitInfo = []
+    allGrooveNames =[]
+
+    for i in range(len(grooveBundle)):
+        newGroove, tempo = getGrooveFromNode(grooveBundle[i])
+        grooveLength = newGroove.lengthInBeats
+        allHits = getAllHitInfo(newGroove.getAudibleHits(), grooveLength)
+        allHits[:,0] = allHits[:,0] * 60.0 * 1000 / 120.0
+        allGroovesHitInfo.append(allHits[:,0:3])
+        allGrooveNames.append(newGroove.name)
+
+    grooveIndex = allGrooveNames.index(grooveName)
+    singleGrooveHitList = allGroovesHitInfo[grooveIndex]
+    print(grooveName, singleGrooveHitList)
+    return singleGrooveHitList

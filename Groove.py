@@ -15,7 +15,6 @@ import numpy as np
 from pandas.plotting import autocorrelation_plot
 import matplotlib.pyplot as plt
 from scipy import stats
-from LoadGrooveFromBFDPalette import *
 from scipy.signal import find_peaks
 import math
 
@@ -96,8 +95,10 @@ class NewGroove():
         salienceProfile = [0, -2, -1, -2, 0, -2, -1, -2, -0, -2, -1, -2, -0, -2, -1, -2,
                            0, -2, -1, -2, 0, -2, -1, -2, 0, -2, -1, -2, 0, -2, -1, -2]
         self.reducedGroove = np.zeros(self.groove10Parts.shape)
-        for i in range(10): #5 parts to reduce
+        for i in range(10): #10 parts to reduce
             self.reducedGroove[:,i] = self._reducePart(self.groove10Parts[:,i],salienceProfile)
+        rowsToRemove = [1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 22, 23, 25, 26, 27, 29, 30, 31]
+        self.reducedGroove = np.delete(self.reducedGroove, rowsToRemove, axis=0)
         return self.reducedGroove
 
     def _reducePart(self, part, salienceProfile):
@@ -107,7 +108,7 @@ class NewGroove():
                 part[i] = 0
         for i in range(length):
             if part[i] != 0.:  # hit detected - must be figural or density transform - on pulse i.
-                for k in range(0, i):  # iterate through all previous events up to i.
+                for k in range(-3, i):  # iterate through all previous events up to i.
                     if part[k] != 0. and salienceProfile[k] < salienceProfile[i]:
                         # if there is a preceding event in a weaker pulse k (this is to be removed)
 
@@ -127,7 +128,7 @@ class NewGroove():
                             part[m] = part[k]  # need to shift note forward - k to m.
                             part[k] = 0  # need to shift note forward - k to m.
             if part[i] == 0:
-                for k in range(0, i):
+                for k in range(-3, i):
                     if part[k] != 0. and salienceProfile[k] < salienceProfile[i]:  # syncopation detected
                         part[i] = part[k]
                         part[k] = 0.0
@@ -138,14 +139,16 @@ class NewGroove():
 class RhythmFeatures():
     def __init__(self, groove10Parts, groove5Parts, groove3Parts):
         self.groove10Parts = groove10Parts
+
         self.groove5Parts = groove5Parts
         self.groove3Parts = groove3Parts
-        self.totalAutocorrelationCurve =  self.getTotalAutocorrelationCurve()
+
 
         #todo: Do I want to list names of class variables in here? So user can see them easily?
 
     def calculateAllFeatures(self):
         # Get all standard features in one go
+        self.totalAutocorrelationCurve = self.getTotalAutocorrelationCurve()
         self.combinedSyncopation = self.getCombinedSyncopation()
         self.polyphonicSyncopation =self.getPolyphonicSyncopation()
         self.lowSyncopation = self.getLowSyncopation()
@@ -162,23 +165,30 @@ class RhythmFeatures():
         self.autocorrelationCentroid = self.getAutocorrelationCentroid()
         self.autocorrelationHarmonicity = self.getAutocorrelationHarmonicity()
         self.totalSymmetry = self.getTotalSymmetry()
+        self.totalAverageIntensity = self.getTotalAverageIntensity()
+        self.totalWeakToStrongRatio = self.getTotalWeakToStrongRatio()
+        self.totalComplexity = self.getTotalComplexity()
 
     def getAllFeatures(self):
         return np.hstack([self.combinedSyncopation,self.polyphonicSyncopation,self.lowSyncopation, self.midSyncopation,
-                          self.highSyncopation, self.lowDensity,  self.midDensity, self.highDensity, self.totalDensity,
-                          self.hiness, self.hisyncness, self.autocorrelationSkew, self.autocorrelationMaxAmplitude,
+                          self.highSyncopation, self.totalWeakToStrongRatio, self.lowDensity,  self.midDensity, self.highDensity, self.totalDensity,
+                          self.hiness, self.hisyncness, self.totalAverageIntensity, self.totalComplexity, self.autocorrelationSkew, self.autocorrelationMaxAmplitude,
                           self.autocorrelationCentroid, self.autocorrelationHarmonicity, self.totalSymmetry])
 
     def printAllFeatures(self):
         print("\n   Rhythm features:")
         print("Combined Mono Syncopation = " + str(self.combinedSyncopation))
         print("Polyphonic Syncopation = " + str(self.polyphonicSyncopation))
+        print("Weak to Strong Ratio = " + str(self.totalWeakToStrongRatio))
         print("Low Syncopation = " + str(self.lowSyncopation))
         print("Mid Syncopation = " + str(self.midSyncopation))
         print("High Syncopation = " + str(self.highSyncopation))
+        print("Total Density = " + str(self.totalDensity))
         print("Low Density = " + str(self.lowDensity))
         print("Mid Density = " + str(self.midDensity))
         print("High Density = " + str(self.highDensity))
+        print("Total Complexity = " + str(self.totalComplexity))
+        print("Total Average Intensity = " + str(self.totalAverageIntensity))
         print("Autocorrelation Skewness = " + str(self.autocorrelationSkew))
         print("Autocorrelation Max Amplitude = " + str(self.autocorrelationMaxAmplitude))
         print("Autocorrelation Centroid = " + str(self.autocorrelationCentroid))
@@ -188,7 +198,7 @@ class RhythmFeatures():
 
     def getCombinedSyncopation(self):
         # Calculate syncopation as summed across all kit parts.
-        # todo: normalize this? (like with 1 part syncopation)
+        # Tested - working correctly (12/3/20)
 
         self.combinedSyncopation = 0.0
         for i in range(self.groove10Parts.shape[1]):
@@ -198,6 +208,7 @@ class RhythmFeatures():
     def getPolyphonicSyncopation(self):
         # Calculate syncopation using Witek syncopation distance - modelling syncopation between instruments
         # Works on semiquaver and quaver levels of syncopation
+        # todo: Normalize...?
 
         salienceProfile = [0, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3,
                            0, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3, -1, -3, -2, -3]
@@ -224,7 +235,7 @@ class RhythmFeatures():
         k = 0
         nextHit = ""
         if low[i] == 1 and low[(i + 1) % 32] !=1 and low[(i+2) % 32] != 1:
-            for j in i + 1, i + 2: #look one and two steps ahead only - account for semiquaver and quaver sync
+            for j in i + 1, i + 2, i + 3, i + 4: #look one and two steps ahead only - account for semiquaver and quaver sync
                 if mid[(j % 32)] == 1 and high[(j % 32)] != 1:
                     nextHit = "Mid"
                     k = j % 32
@@ -267,7 +278,7 @@ class RhythmFeatures():
         nextHit = ""
         k = 0
         if mid[i] == 1 and mid[(i + 1) % 32] !=1 and mid[(i+2) % 32] != 1:
-            for j in i + 1, i + 2: #look one and 2 steps ahead only
+            for j in i + 1, i + 2, i + 3, i + 4: #look one and 2 steps ahead only
                 if low[(j % 32)] == 1 and high[(j % 32)] != 1:
                     nextHit = "Low"
                     k = j % 32
@@ -550,7 +561,7 @@ class RhythmFeatures():
     def _getSymmetry(self, part):
         # Calculate symmetry for any number of parts.
         # Defined as the the number of onsets that appear in the same positions in the first and second halves
-        # of the pattern, divided by the total number of onsets in the pattern. As perfectly symmetricl pattner
+        # of the pattern, divided by the total number of onsets in the pattern. As perfectly symmetrical pattern
         # would have a symmetry of 1.0
 
         symmetryCount = 0.0
@@ -558,7 +569,7 @@ class RhythmFeatures():
         for i in range(part1.shape[0]):
             for j in range(part1.shape[1]):
                 if part1[i,j] != 0.0 and part2[i,j] != 0.0:
-                    symmetryCount += (1.0 - abs(part1[i,j] - part2[i,j])) # symmetry is
+                    symmetryCount += (1.0 - abs(part1[i,j] - part2[i,j]))
         symmetry = symmetryCount*2.0 / np.count_nonzero(part)
         return symmetry
 
@@ -584,30 +595,30 @@ class MicrotimingFeatures():
 
         self.microtimingEventProfile = np.hstack([self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[0:16]),
                                             self._getMicrotimingEventProfile1Bar(self.microtimingMatrix[16:])])
-        self.laidbackness = self.getLaidbackness()
-        self.ontopness = self.getOntopness()
-        self.pushness = self.getPushness()
+        self.laidbackEvents = self.getLaidbackEvents()
+        self.pushedEvents = self.getPushedEvents()
+        self.laidbackness = self.laidbackEvents - self.pushedEvents
+        self.timingAccuracy = self.getTimingAccuracy()
+        #todo: this is my timing accuracy feature - fix and implement properly
 
     def getAllFeatures(self):
         #todo: doesn't retrn isSwung or microtimingeventprofile
-        return np.hstack([self.swingness, self.swingRatio, self.laidbackness, self.ontopness, self.pushness])
+        return np.hstack([self.checkIfSwung(), self.swingRatio, self.laidbackness, self.ontopness, self.pushness])
 
     def printAllFeatures(self):
         print("\n   Microtiming features:")
-        print('Swing Ratio = ' + str(self.swingRatio))
         print("Swingness = " + str(self.swingness))
         print("Is swung = " + str(self.isSwung))
         print("Laidback-ness  = " + str(self.laidbackness))
-        print("Ontop-ness  = " + str(self.ontopness))
-        print("Pushed-ness  = " + str(self.pushness))
+        print("Timing Accuracy  = " + str(self.timingAccuracy))
 
     def checkIfSwung(self):
         # Check if loop is swung - return 'true' or 'false'
 
         if self.swingness > 0.0:
-            self.isSwung = True
+            self.isSwung = 1
         elif self.swingness == 0.0:
-            self.isSwung = False
+            self.isSwung = 0
 
         return self.isSwung
 
@@ -623,26 +634,19 @@ class MicrotimingFeatures():
         swungNotePositions = list(range(self.averageTimingMatrix.shape[0]))[3::4]
 
         swingCount = 0.0
-        secondQuaverLengths = np.zeros([int(self.averageTimingMatrix.shape[0]/4)])
-        semiquaverStepLength = 60.0 / self.tempo / 4.0
-
         j = 0
         for i in swungNotePositions:
             if self.averageTimingMatrix[i] < -25.0:
                 swingCount +=1
-                secondQuaverLengths[j] = semiquaverStepLength - self.averageTimingMatrix[i]
             j+=1
 
-        if np.count_nonzero(secondQuaverLengths) == 0:
-            shortQuaverAverageLength = semiquaverStepLength * 2.0
-        else:
-            shortQuaverAverageLength = np.mean(secondQuaverLengths[secondQuaverLengths != 0])
+        swingCount = np.clip(swingCount,0,len(swungNotePositions))
 
-        longQuaverAverageLength = (semiquaverStepLength*4.0) - shortQuaverAverageLength
-        self.swingRatio = longQuaverAverageLength / shortQuaverAverageLength
-        if np.isnan(self.swingRatio):
-            self.swingRatio = 1
-        self.swingness = swingCount / len(swungNotePositions)
+        if swingCount >0:
+            self.swingness = (1 + (swingCount / len(swungNotePositions)/10)) #todo: weight swing count
+        else:
+            self.swingness = 0.0
+
 
     def _getMicrotimingEventProfile1Bar(self, microtimingMatrix):
         # Get profile of microtiming events for use in pushness/laidbackness/ontopness features
@@ -656,7 +660,7 @@ class MicrotimingFeatures():
 
         microtimingToGridProfile = np.zeros([8])
         microtimingToCymbalProfile = np.zeros([8])
-        threshold = 15.0
+        threshold = 12.0
         kickTiming1 = microtimingMatrix[0, 0]
         hihatTiming1 = microtimingMatrix[0, 2]
         snareTiming2 = microtimingMatrix[4, 1]
@@ -706,31 +710,40 @@ class MicrotimingFeatures():
 
         return microtimingEventProfile1bar
 
-    def getPushness(self):
+    def getPushedEvents(self):
         # Calculate how 'pushed' the loop is, based on number of pushed events / number of possible pushed events
 
         pushEvents = self.microtimingEventProfile[1::2]
         pushEventCount = np.count_nonzero(pushEvents)
         totalPushPositions = pushEvents.shape[0]
-        self.pushness = pushEventCount / totalPushPositions
-        return self.pushness
+        self.pushedEvents = pushEventCount / totalPushPositions
+        return self.pushedEvents
 
-    def getLaidbackness(self):
+    def getLaidbackEvents(self):
         # Calculate how 'laid-back' the loop is, based on the number of laid back events / number of possible laid back events
 
         laidbackEvents = self.microtimingEventProfile[0::2]
         laidbackEventCount = np.count_nonzero(laidbackEvents)
         totalLaidbackPositions = laidbackEvents.shape[0]
-        self.laidbackness =  laidbackEventCount / float(totalLaidbackPositions)
-        return self.laidbackness
+        self.laidbackEvents =  laidbackEventCount / float(totalLaidbackPositions)
+        return self.laidbackEvents
 
-    def getOntopness(self):
-        # Calculate how 'ontop' the loop is, based on the number of events without microtiming (=0 in microtiming
-        # event profile) / number of possible microtiming events
+    def getTimingAccuracy(self):
+        # Calculate timing accuracy of the loop
 
-        ontopEventCount = np.count_nonzero(self.microtimingEventProfile==0)
-        self.ontopness = ontopEventCount / float(self.microtimingEventProfile.shape[0])
-        return self.ontopness
+        swungNotePositions = list(range(self.averageTimingMatrix.shape[0]))[3::4]
+        nonSwingTiming = 0.0
+        nonSwingNoteCount = 0
+        tripletPositions = 1, 5, 9, 13, 17, 21, 25, 29
+
+        for i in range(self.averageTimingMatrix.shape[0]):
+            if i not in swungNotePositions and i not in tripletPositions:
+                if ~np.isnan(self.averageTimingMatrix[i]):
+                    nonSwingTiming += abs(np.nan_to_num(self.averageTimingMatrix[i]))
+                    nonSwingNoteCount += 1
+        self.timingAccuracy = nonSwingTiming / float(nonSwingNoteCount)
+
+        return self.timingAccuracy
 
     def getAverageTimingDeviation(self):
         # Get vector of average microtiming deviation at each metrical position

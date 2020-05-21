@@ -13,7 +13,7 @@ tempoDetection = madmom.features.tempo.TempoEstimationProcessor(fps=100)
 beatDetection = madmom.features.beats.BeatTrackingProcessor(fps=100)
 act =  madmom.features.beats.RNNBeatProcessor()('JB 7.wav')
 
-beats = beatDetection(act) -0.1 #assumes constant tempo through audio. Returns beats for all of audio
+beats = beatDetection(act) #assumes constant tempo through audio. Returns beats for all of audio
 
 #4 equal spaces between each value in vector. Don't cut to bar length at this stage
 allMetricalPositions = np.empty([0])
@@ -23,9 +23,9 @@ for i in range(beats.shape[0]-1):
 print(beats)
 onsets = ADT(["JB 7.wav"], tab='no') # returns list of dicts - one for each instrument
 
-kicks = onsets[0].get("Kick") -0.1 #need to match these to metrical grid vector. Then extend to the nearest bar.
-snares = onsets[0].get("Snare") -0.1
-hihats = onsets[0].get("Hihat") -0.1
+kicks = onsets[0].get("Kick") #need to match these to metrical grid vector. Then extend to the nearest bar.
+snares = onsets[0].get("Snare")
+hihats = onsets[0].get("Hihat")
 
 print(kicks)
 print(snares)

@@ -8,8 +8,13 @@ from matplotlib import pyplot as plt
 import matplotlib.ticker as mticker
 
 
-def plotGrooveMatrix(groove, numberOfParts=10):
-    grooveMatrix = groove.groove10Parts
+def plotGrooveMatrix(groove, numberOfParts=10, reduced=False):
+
+    if reduced == True:
+        grooveMatrix = groove.getReducedGroove()
+    else:
+        grooveMatrix = groove.groove10Parts
+
     plt.close()
     plt.figure()
     plt.grid(which="both")
@@ -30,7 +35,7 @@ def plotGrooveMatrix(groove, numberOfParts=10):
     plt.yticks([0,1,2,3,4,5,6,7,8,9], yLabels)
     tickPoints = np.linspace(0,9,37)
     plt.gca().set_xticks(tickPoints, minor=True)
-    plt.gca().set_xticklabels(xLabelsMinor, minor=True)
+    plt.gca().set_xticklabels(xLabelsMinor, minor=True, fontdict={'color':"gray"})
 
     plt.gca().set_xticks([0,4,8], minor=False)
     plt.gca().set_xticklabels(["1","2","3"], minor=False,fontdict={'fontsize':20})
@@ -40,3 +45,6 @@ def plotGrooveMatrix(groove, numberOfParts=10):
 
 def plotMicrotimingDeviation(groove, instrument):
     pass
+
+#todo: plot reduced groove?
+#todo: for some reason this doesn't work when I try to use it twice?
