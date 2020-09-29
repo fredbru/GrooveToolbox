@@ -8,12 +8,12 @@ from matplotlib import pyplot as plt
 import matplotlib.ticker as mticker
 
 
-def plotGrooveMatrix(groove, numberOfParts=10, reduced=False):
+def plot_groove_matrix(groove, numberOfParts=10, reduced=False):
 
     if reduced == True:
-        grooveMatrix = groove.getReducedGroove()
+        groove_matrix = groove.reduce_groove()
     else:
-        grooveMatrix = groove.groove10Parts
+        groove_matrix = groove.groove_10_parts
 
     plt.close()
     plt.figure()
@@ -24,9 +24,9 @@ def plotGrooveMatrix(groove, numberOfParts=10, reduced=False):
     xLabelsMinor = ["","","","", "2","","","", "3","","","","4","","","","","","","","2","","","","3","","","",
                     "4","","","","","","","","2"]
 
-    for i in range(grooveMatrix.shape[0]):
-        for j in range(grooveMatrix.shape[1]):
-            if grooveMatrix[i,j] != 0.:
+    for i in range(groove_matrix.shape[0]):
+        for j in range(groove_matrix.shape[1]):
+            if groove_matrix[i,j] != 0.:
                 plt.scatter((i)/4.,j, marker='d', color='k', s=30)
     plt.gca().yaxis.set_major_locator(mticker.MultipleLocator(1))
     plt.gca().xaxis.set_minor_locator(mticker.MultipleLocator(0.25))
@@ -43,7 +43,8 @@ def plotGrooveMatrix(groove, numberOfParts=10, reduced=False):
     plt.hold()
     plt.show()
 
-def plotMicrotimingDeviation(groove, instrument):
+def plot_microtiming_deviation(groove, instrument):
+    #todo:finish
     pass
 
 #todo: plot reduced groove?

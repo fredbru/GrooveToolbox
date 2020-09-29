@@ -8,7 +8,7 @@ from fx.common.filesystem import *
 
 np.set_printoptions(suppress=True,precision=2)
 
-def getAllHitInfo(hits, grooveLength):
+def get_all_hit_info(hits, groove_len):
     """ Create list of all hits in a groove and relevant information for each
     Format: [quantized time index, velocity, kit piece, microtiming deviation from metronome]
 
@@ -25,11 +25,11 @@ def getAllHitInfo(hits, grooveLength):
     9 High tom
 
     :param hits:
-    :param grooveLength:
+    :param groove_len:
     :return: grooveArray
     """
-    allEvents = np.zeros([len(hits), 4])
-    openHiHatArtics = {0,1,2,3,6,7,19}
+    all_events = np.zeros([len(hits), 4])
+    open_hihat_artics = {0,1,2,3,6,7,19}
     kickIndex = 0
     snareIndex = 1
     hihatIndex = 2
@@ -43,35 +43,35 @@ def getAllHitInfo(hits, grooveLength):
     closedHiHatArtics = {10,11,14,15,16,17,18,20,8000}
     for i in range(len(hits)):
 
-        allEvents[i,0] = hits[i].beats
-        allEvents[i,1] = hits[i].velocity
-        kitPieceSlot = int(hits[i].slotIndex)
-        if kitPieceSlot == kickIndex:
-            allEvents[i,2] == 0
-        if kitPieceSlot == snareIndex:
-            allEvents[i,2] =1
+        all_events[i,0] = hits[i].beats
+        all_events[i,1] = hits[i].velocity
+        kit_piece_slot = int(hits[i].slotIndex)
+        if kit_piece_slot == kickIndex:
+            all_events[i,2] == 0
+        if kit_piece_slot == snareIndex:
+            all_events[i,2] =1
 
         # Split open and closed articulations into different categories.
-        if kitPieceSlot == hihatIndex:
-            if int(hits[i].articIndex) in openHiHatArtics:
-                allEvents[i,2] = 3
+        if kit_piece_slot == hihatIndex:
+            if int(hits[i].articIndex) in open_hihat_artics:
+                all_events[i,2] = 3
             else:
-                allEvents[i,2] = 2
-        if kitPieceSlot == rideIndex:
-            allEvents[i,2] = 4
-        if kitPieceSlot == crashIndex:
-            allEvents[i,2] = 5
-        if kitPieceSlot == extraCymbalIndex:
-            allEvents[i,2] = 6
-        if kitPieceSlot == floorTomIndex:
-            allEvents[i,2] = 7
-        if kitPieceSlot == midTomIndex:
-            allEvents[i,2] = 8
-        if kitPieceSlot == hiTomIndex:
-            allEvents[i,2] = 9
-    return allEvents
+                all_events[i,2] = 2
+        if kit_piece_slot == rideIndex:
+            all_events[i,2] = 4
+        if kit_piece_slot == crashIndex:
+            all_events[i,2] = 5
+        if kit_piece_slot == extraCymbalIndex:
+            all_events[i,2] = 6
+        if kit_piece_slot == floorTomIndex:
+            all_events[i,2] = 7
+        if kit_piece_slot == midTomIndex:
+            all_events[i,2] = 8
+        if kit_piece_slot == hiTomIndex:
+            all_events[i,2] = 9
+    return all_events
 
-def getGroovesFromBundle(grooveBundle):
+def get_grooves_from_bundle(grooveBundle):
     """ Get information for all grooves from within a bundle. Extract hits and
     groove names into arrays, then put grooves and names into two separate lists
     Assumes a groove is 2 bars long, 4/4
@@ -79,100 +79,100 @@ def getGroovesFromBundle(grooveBundle):
     :return:
     """
     #todo: write this properly
-    allGroovesHitInfo = []
-    allGrooveNames =[]
+    all_grooves_hit_info = []
+    all_groove_names =[]
 
     for i in range(len(grooveBundle)):
-        newGroove, tempo = getGrooveFromNode(grooveBundle[i])
-        grooveLength = newGroove.lengthInBeats
-        allHits = getAllHitInfo(newGroove.getAudibleHits(), grooveLength)
+        new_groove, tempo = getGrooveFromNode(grooveBundle[i])
+        groove_len = new_groove.lengthInBeats
+        all_hits = get_all_hit_info(new_groove.getAudibleHits(), groove_len)
 
         # round to semiquavers (0.25)
-        multipliedHit = allHits[:,0]*4.0
-        roundedHits = multipliedHit.round(decimals=0) / 4.0
-        microtimingVariationBeats = allHits[:, 0] - roundedHits
-        microtimingVariationMS = microtimingVariationBeats * 60.0 * 1000 / tempo
-        allHits[:, 0] = roundedHits
-        allHits[:, 3] = microtimingVariationMS
-        roundedGrooveEvents = allHits
+        multiplied_hit = all_hits[:,0]*4.0
+        rounded_hits = multiplied_hit.round(decimals=0) / 4.0
+        microtiming_variation_Beats = all_hits[:, 0] - rounded_hits
+        microtiming_variation_MS = microtiming_variation_Beats * 60.0 * 1000 / tempo
+        all_hits[:, 0] = rounded_hits
+        all_hits[:, 3] = microtiming_variation_MS
+        rounded_groove_events = all_hits
 
-        allGroovesHitInfo.append(roundedGrooveEvents)
-        allGrooveNames.append(newGroove.name)
-    return allGroovesHitInfo, allGrooveNames, tempo
+        all_grooves_hit_info.append(rounded_groove_events)
+        all_groove_names.append(new_groove.name)
+    return all_grooves_hit_info, all_groove_names, tempo
 
-def getGrooveFromBFDPalette(filename, grooveName):
+def get_groove_from_BFD_palette(filename, groove_name):
     # Get a single groove and its corresponding microtiming matrix in correct format
     # from extracted hit info.
     # Input = name of palette file + name of groove within that palette you want to use
 
-    pathToPalettes = "Grooves/"
-    paletteFileName = filename
+    path_to_palettes = "Grooves/"
+    palette_filename = filename
 
-    bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
-    grooveBundle = getGrooveNodes(bundleNode)
+    bundle_node = getGrooveBundleNode(parse((path_to_palettes + palette_filename)))
+    grooveBundle = getGrooveNodes(bundle_node)
 
-    allGroovesHitInfo, allGrooveNames, tempo = getGroovesFromBundle(grooveBundle)
+    all_grooves_hit_info, all_groove_names, tempo = get_grooves_from_bundle(grooveBundle)
 
-    hitsMatrix = np.zeros([32, 10])
-    timingMatrix = np.zeros([32,10])
-    timingMatrix[:] = np.nan
+    hits_matrix = np.zeros([32, 10])
+    timing_matrix = np.zeros([32,10])
+    timing_matrix[:] = np.nan
 
-    grooveIndex = allGrooveNames.index(grooveName)
-    singleGrooveHitInfo = allGroovesHitInfo[grooveIndex]
+    groove_index = all_groove_names.index(groove_name)
+    single_groove_hit_info = all_grooves_hit_info[groove_index]
 
-    for j in range(singleGrooveHitInfo.shape[0]):
-        timePosition = int(singleGrooveHitInfo[j,0]*4)
-        kitPiecePosition = int(singleGrooveHitInfo[j, 2])
-        timingMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,3]
-        hitsMatrix[timePosition%32, kitPiecePosition] = singleGrooveHitInfo[j,1]
+    for j in range(single_groove_hit_info.shape[0]):
+        time_position = int(single_groove_hit_info[j,0]*4)
+        kit_piece_position = int(single_groove_hit_info[j, 2])
+        timing_matrix[time_position%32, kit_piece_position] = single_groove_hit_info[j,3]
+        hits_matrix[time_position%32, kit_piece_position] = single_groove_hit_info[j,1]
 
-    return hitsMatrix, timingMatrix, tempo
+    return hits_matrix, timing_matrix, tempo
 
-def getAllGroovesFromBFDPalette(filename):
-    pathToPalettes = ""
-    paletteFileName = filename
+def get_all_grooves_from_BFD_palette(filename):
+    path_to_palettes = ""
+    palette_filename = filename
 
-    hitsMatricies = []
-    timingMatricies = []
+    hits_matricies = []
+    timing_matricies = []
     names = []
-    bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
-    grooveBundle = getGrooveNodes(bundleNode)
+    bundle_node = getGrooveBundleNode(parse((path_to_palettes + palette_filename)))
+    grooveBundle = getGrooveNodes(bundle_node)
 
-    allGroovesHitInfo, allGrooveNames, tempo = getGroovesFromBundle(grooveBundle)
+    all_grooves_hit_info, all_groove_names, tempo = get_grooves_from_bundle(grooveBundle)
 
-    for i in range(len(allGroovesHitInfo)):
-        hitsMatrix = np.zeros([32, 10])
-        timingMatrix = np.zeros([32, 10])
-        timingMatrix[:] = np.nan
+    for i in range(len(all_grooves_hit_info)):
+        hits_matrix = np.zeros([32, 10])
+        timing_matrix = np.zeros([32, 10])
+        timing_matrix[:] = np.nan
 
-        singleGrooveHitInfo = allGroovesHitInfo[i]
-        for j in range(singleGrooveHitInfo.shape[0]):
-            timePosition = int(singleGrooveHitInfo[j, 0] * 4)
-            kitPiecePosition = int(singleGrooveHitInfo[j, 2])
-            timingMatrix[timePosition % 32, kitPiecePosition] = singleGrooveHitInfo[j, 3]
-            hitsMatrix[timePosition % 32, kitPiecePosition] = singleGrooveHitInfo[j, 1]
-        hitsMatricies.append(hitsMatrix)
-        timingMatricies.append(timingMatrix)
-    return hitsMatricies, timingMatricies, allGrooveNames
+        single_groove_hit_info = all_grooves_hit_info[i]
+        for j in range(single_groove_hit_info.shape[0]):
+            time_position = int(single_groove_hit_info[j, 0] * 4)
+            kit_piece_position = int(single_groove_hit_info[j, 2])
+            timing_matrix[time_position % 32, kit_piece_position] = single_groove_hit_info[j, 3]
+            hits_matrix[time_position % 32, kit_piece_position] = single_groove_hit_info[j, 1]
+        hits_matricies.append(hits_matrix)
+        timing_matricies.append(timing_matrix)
+    return hits_matricies, timing_matricies, all_groove_names
 
-def getGrooveListFormat(filename, grooveName):
-    pathToPalettes = "Grooves/"
-    paletteFileName = filename
-    bundleNode = getGrooveBundleNode(parse((pathToPalettes + paletteFileName)))
-    grooveBundle = getGrooveNodes(bundleNode)
+def get_groove_list_format(filename, groove_name):
+    path_to_palettes = "Grooves/"
+    palette_filename = filename
+    bundle_node = getGrooveBundleNode(parse((path_to_palettes + palette_filename)))
+    grooveBundle = getGrooveNodes(bundle_node)
 
-    allGroovesHitInfo = []
-    allGrooveNames =[]
+    all_grooves_hit_info = []
+    all_groove_names =[]
 
     for i in range(len(grooveBundle)):
-        newGroove, tempo = getGrooveFromNode(grooveBundle[i])
-        grooveLength = newGroove.lengthInBeats
-        allHits = getAllHitInfo(newGroove.getAudibleHits(), grooveLength)
-        allHits[:,0] = allHits[:,0] * 60.0 * 1000 / 120.0
-        allGroovesHitInfo.append(allHits[:,0:3])
-        allGrooveNames.append(newGroove.name)
+        new_groove, tempo = getGrooveFromNode(grooveBundle[i])
+        groove_len = new_groove.lengthInBeats
+        all_hits = get_all_hit_info(new_groove.getAudibleHits(), groove_len)
+        all_hits[:,0] = all_hits[:,0] * 60.0 * 1000 / 120.0
+        all_grooves_hit_info.append(all_hits[:,0:3])
+        all_groove_names.append(new_groove.name)
 
-    grooveIndex = allGrooveNames.index(grooveName)
-    singleGrooveHitList = allGroovesHitInfo[grooveIndex]
-    print(grooveName, singleGrooveHitList)
-    return singleGrooveHitList
+    groove_index = all_groove_names.index(groove_name)
+    single_groove_hit_list = all_grooves_hit_info[groove_index]
+    print(groove_name, single_groove_hit_list)
+    return single_groove_hit_list

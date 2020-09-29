@@ -4,20 +4,20 @@
 import numpy as np
 import math
 
-def weightedHammingDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="Off"):
-    if numberOfParts == 3:
-        a = grooveA.groove3Parts
-        b = grooveB.groove3Parts
-    elif numberOfParts == 5:
-        a = grooveA.groove5Parts
-        b = grooveB.groove5Parts
-    elif numberOfParts == 10:
-        a = grooveA.groove10Parts
-        b = grooveB.groove10Parts
+def weighted_Hamming_distance(grooveA, grooveB, parts_count=10, beat_weighting="Off"):
+    if parts_count == 3:
+        a = grooveA.groove_3_Parts
+        b = grooveB.groove_3_Parts
+    elif parts_count == 5:
+        a = grooveA.groove_5_Parts
+        b = grooveB.groove_5_Parts
+    elif parts_count == 10:
+        a = grooveA.groove_10_Parts
+        b = grooveB.groove_10_Parts
 
-    if beatWeighting == "On":
-        a = _weightGroove(a)
-        b = _weightGroove(b)
+    if beat_weighting == "On":
+        a = _weight_groove(a)
+        b = _weight_groove(b)
 
 
 
@@ -25,104 +25,104 @@ def weightedHammingDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="O
     return math.sqrt(np.dot(x, x.T))
 
 
-def fuzzyHammingDistance(grooveA, grooveB, numberOfParts=10, beatWeighting="Off"):
+def fuzzy_Hamming_distance(grooveA, grooveB, parts_count=10, beat_weighting="Off"):
     # Get fuzzy Hamming distance as velocity weighted Hamming distance, but with 1 metrical distance lookahead/back
     # and microtiming weighting
     #
-    if numberOfParts == 3:
-        a = grooveA.groove3Parts
-        b = grooveB.groove3Parts #TODO: implement timing matrix combination in Groove.py
-    elif numberOfParts == 5:
-        a = grooveA.groove5Parts
-        b = grooveB.groove5Parts
-    elif numberOfParts == 10:
-        a = grooveA.groove10Parts
-        aTiming = grooveA.timingMatrix
-        b = grooveB.groove10Parts
-        bTiming = grooveB.timingMatrix
+    if parts_count == 3:
+        a = grooveA.groove_3_Parts
+        b = grooveB.groove_3_Parts #TODO: implement timing matrix combination in Groove.py
+    elif parts_count == 5:
+        a = grooveA.groove_5_Parts
+        b = grooveB.groove_5_Parts
+    elif parts_count == 10:
+        a = grooveA.groove_10_Parts
+        a_timing = grooveA.timing_matrix
+        b = grooveB.groove_10_Parts
+        b_timing = grooveB.timing_matrix
 
-    if beatWeighting == "On":
-        a = _weightGroove(a)
-        b = _weightGroove(b)
+    if beat_weighting == "On":
+        a = _weight_groove(a)
+        b = _weight_groove(b)
 
-    timingDifference = np.nan_to_num(aTiming - bTiming)
+    timing_difference = np.nan_to_num(a_timing - b_timing)
 
     x = np.zeros(a.shape)
     tempo = 120.0
-    stepTimeMS = 60.0 * 1000 / tempo / 4 # semiquaver step time in ms
+    steptime_ms = 60.0 * 1000 / tempo / 4 # semiquaver step time in ms
 
 
-    timingDifferenceWeight = timingDifference / 125.
-    timingDifferenceWeight = 1+np.absolute(timingDifferenceWeight)
-    singletimingDifferenceWeight = 400
+    difference_weight = timing_difference / 125.
+    difference_weight = 1+np.absolute(difference_weight)
+    single_difference_weight = 400
 
-    for j in range(numberOfParts):
+    for j in range(parts_count):
         for i in range(31):
             if a[i,j] != 0.0 and b[i,j] != 0.0:
-                x[i,j] = (a[i,j] - b[i,j]) * (timingDifferenceWeight[i,j])
+                x[i,j] = (a[i,j] - b[i,j]) * (difference_weight[i,j])
             elif a[i,j] != 0.0 and b[i,j] == 0.0:
                 if b[(i+1)%32, j] != 0.0 and a[(i+1)%32, j] == 0.0:
-                    singletimingDifference = np.nan_to_num(aTiming[i,j]) - np.nan_to_num(bTiming[(i+1)%32,j]) + stepTimeMS
-                    if singletimingDifference < 125.:
-                        singletimingDifferenceWeight = 1 + abs(singletimingDifferenceWeight/stepTimeMS)
-                        x[i,j] = (a[i,j] - b[(i+1)%32,j]) * singletimingDifferenceWeight
+                    single_difference = np.nan_to_num(a_timing[i,j]) - np.nan_to_num(b_timing[(i+1)%32,j]) + steptime_ms
+                    if single_difference < 125.:
+                        single_difference_weight = 1 + abs(single_difference_weight/steptime_ms)
+                        x[i,j] = (a[i,j] - b[(i+1)%32,j]) * single_difference_weight
                     else:
-                        x[i, j] = (a[i, j] - b[i, j]) * timingDifferenceWeight[i, j]
+                        x[i, j] = (a[i, j] - b[i, j]) * difference_weight[i, j]
 
                 elif b[(i-1)%32,j] != 0.0 and a[(i-1)%32, j] == 0.0:
-                    singletimingDifference =  np.nan_to_num(aTiming[i,j]) - np.nan_to_num(bTiming[(i-1)%32,j]) - stepTimeMS
+                    single_difference =  np.nan_to_num(a_timing[i,j]) - np.nan_to_num(b_timing[(i-1)%32,j]) - steptime_ms
 
-                    if singletimingDifference > -125.:
-                        singletimingDifferenceWeight = 1 + abs(singletimingDifferenceWeight/stepTimeMS)
-                        x[i,j] = (a[i,j] - b[(i-1)%32,j]) * singletimingDifferenceWeight
+                    if single_difference > -125.:
+                        single_difference_weight = 1 + abs(single_difference_weight/steptime_ms)
+                        x[i,j] = (a[i,j] - b[(i-1)%32,j]) * single_difference_weight
                     else:
-                        x[i, j] = (a[i, j] - b[i, j]) * timingDifferenceWeight[i, j]
+                        x[i, j] = (a[i, j] - b[i, j]) * difference_weight[i, j]
                 else:
-                    x[i, j] = (a[i, j] - b[i, j]) * timingDifferenceWeight[i, j]
+                    x[i, j] = (a[i, j] - b[i, j]) * difference_weight[i, j]
 
             elif a[i,j] == 0.0 and b[i,j] != 0.0:
                 if b[(i + 1) % 32, j] != 0.0 and a[(i + 1) % 32, j] == 0.0:
-                    singletimingDifference =  np.nan_to_num(aTiming[i,j]) - np.nan_to_num(bTiming[(i+1)%32,j]) + stepTimeMS
-                    if singletimingDifference < 125.:
-                        singletimingDifferenceWeight = 1 + abs(singletimingDifferenceWeight/stepTimeMS)
-                        x[i,j] = (a[i,j] - b[(i+1)%32,j]) * singletimingDifferenceWeight
+                    single_difference =  np.nan_to_num(a_timing[i,j]) - np.nan_to_num(b_timing[(i+1)%32,j]) + steptime_ms
+                    if single_difference < 125.:
+                        single_difference_weight = 1 + abs(single_difference_weight/steptime_ms)
+                        x[i,j] = (a[i,j] - b[(i+1)%32,j]) * single_difference_weight
                     else:
-                        x[i, j] = (a[i, j] - b[i, j]) * timingDifferenceWeight[i, j]
+                        x[i, j] = (a[i, j] - b[i, j]) * difference_weight[i, j]
 
                 elif b[(i-1)%32,j] != 0.0 and a[(i-1)%32, j] == 0.0:
-                    singletimingDifference =  np.nan_to_num(aTiming[i,j]) - np.nan_to_num(bTiming[(i-1)%32,j]) - stepTimeMS
-                    if singletimingDifference > -125.:
-                        singletimingDifferenceWeight = 1 + abs(singletimingDifferenceWeight/stepTimeMS)
-                        x[i,j] = (a[i,j] - b[(i-1)%32,j]) * singletimingDifferenceWeight
+                    single_difference =  np.nan_to_num(a_timing[i,j]) - np.nan_to_num(b_timing[(i-1)%32,j]) - steptime_ms
+                    if single_difference > -125.:
+                        single_difference_weight = 1 + abs(single_difference_weight/steptime_ms)
+                        x[i,j] = (a[i,j] - b[(i-1)%32,j]) * single_difference_weight
 
                     else:
-                        x[i, j] = (a[i, j] - b[i, j]) * timingDifferenceWeight[i, j]
+                        x[i, j] = (a[i, j] - b[i, j]) * difference_weight[i, j]
 
                 else: # if no nearby onsets, need to count difference between onset and 0 value.
-                    x[i, j] = (a[i, j] - b[i, j]) * timingDifferenceWeight[i, j]
+                    x[i, j] = (a[i, j] - b[i, j]) * difference_weight[i, j]
 
 
-        fuzzyDistance = math.sqrt(np.dot(x.flatten(),x.flatten().T))
-    return fuzzyDistance
+        fuzzy_distance = math.sqrt(np.dot(x.flatten(),x.flatten().T))
+    return fuzzy_distance
 
-def structuralSimilarityDistance(grooveA, grooveB):
+def structural_similarity_distance(grooveA, grooveB):
     # Simialrity calculated between reduced versions of loops, measuring whether onsets occur in
     # roughly similar parts of two loops. Calculated as hamming distance between reduced versions.
     # of grooves
-    a = grooveA.getReducedGroove()
-    b = grooveB.getReducedGroove()
-    rowsToRemove = [1,2,3,5,6,7,9,10,11,13,14,15,17,18,19,21,22,23,25,26,27,29,30,31]
-    reducedA = np.delete(a, rowsToRemove, axis=0)
-    reducedB = np.delete(b, rowsToRemove, axis=0)
+    a = grooveA.reduce_groove()
+    b = grooveB.reduce_groove()
+    rows_to_remove = [1,2,3,5,6,7,9,10,11,13,14,15,17,18,19,21,22,23,25,26,27,29,30,31]
+    reducedA = np.delete(a, rows_to_remove, axis=0)
+    reducedB = np.delete(b, rows_to_remove, axis=0)
     x = (a.flatten()-b.flatten())
-    structuralDifference = math.sqrt(np.dot(x, x.T))
-    return structuralDifference
+    structural_difference = math.sqrt(np.dot(x, x.T))
+    return structural_difference
 
 
-def _weightGroove(self, groove):
+def _weight_groove(self, groove):
     # Metrical awareness profile weighting for hamming distance.
     # The rhythms in each beat of a bar have different significance based on GTTM.
-    beatAwarenessWeighting = [1,1,1,1,
+    beat_awareness_weighting = [1,1,1,1,
                               0.27,0.27,0.27,0.27,
                               0.22,0.22,0.22,0.22,
                               0.16,0.16,0.16,0.16,
@@ -132,5 +132,5 @@ def _weightGroove(self, groove):
                               0.16,0.16,0.16,0.16,]
 
     for i in range(groove.shape[1]):
-        groove[:,i] = groove[:,i] * beatAwarenessWeighting
+        groove[:,i] = groove[:,i] * beat_awareness_weighting
     return groove

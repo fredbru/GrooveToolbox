@@ -4,22 +4,22 @@ import madmom
 import numpy as np
 from LoadGrooveFromBFDPalette import *
 
-hitsMatrix, timingMatrix, tempo = getGrooveFromBFDPalette("Stanton Moore JB.bfd3pal", "JB 7")
+hits_matrix, timing_matrix, tempo = get_groove_from_BFD_palette("Stanton Moore JB.bfd3pal", "JB 7")
 
 #np.set_printoptions(precision=2)
 np.set_printoptions(suppress=True)
 
-tempoDetection = madmom.features.tempo.TempoEstimationProcessor(fps=100)
-beatDetection = madmom.features.beats.BeatTrackingProcessor(fps=100)
+tempo_detection = madmom.features.tempo.TempoEstimationProcessor(fps=100)
+beat_detection = madmom.features.beats.BeatTrackingProcessor(fps=100)
 act =  madmom.features.beats.RNNBeatProcessor()('JB 7.wav')
 
-beats = beatDetection(act) #assumes constant tempo through audio. Returns beats for all of audio
+beats = beat_detection(act) #assumes constant tempo through audio. Returns beats for all of audio
 
 #4 equal spaces between each value in vector. Don't cut to bar length at this stage
-allMetricalPositions = np.empty([0])
+all_metrical_positions = np.empty([0])
 for i in range(beats.shape[0]-1):
-    positionsInOneBeat = np.linspace(beats[i],beats[i+1],5)
-    allMetricalPositions = np.hstack([allMetricalPositions,positionsInOneBeat[0:-1]])
+    positions_in_one_beat = np.linspace(beats[i],beats[i+1],5)
+    all_metrical_positions = np.hstack([all_metrical_positions,positions_in_one_beat[0:-1]])
 print(beats)
 onsets = ADT(["JB 7.wav"], tab='no') # returns list of dicts - one for each instrument
 
@@ -34,18 +34,18 @@ print(hihats)
 #for each onset
 # find the closest metrical position (seconds)
 # place that onset into the index of that metrical position
-grooveMatrix = np.zeros([32,10]) #todo: assumes 2 bar loops
+groove_matrix = np.zeros([32,10]) #todo: assumes 2 bar loops
 
 j = 0
 for instrument in kicks, snares, hihats:
     for i in range(instrument.shape[0]):
-        matchingMetricalPosition = (np.abs(allMetricalPositions-(instrument[i]))).argmin()
-        if matchingMetricalPosition < 32: #predefined bar length
-            grooveMatrix[matchingMetricalPosition,j] = 1.0 #no velocity information
+        matching_metrical_position = (np.abs(all_metrical_positions-(instrument[i]))).argmin()
+        if matching_metrical_position < 32: #predefined bar length
+            groove_matrix[matching_metrical_position,j] = 1.0 #no velocity information
     j+=1
 
-print(grooveMatrix)
-print(grooveMatrix.shape)
+print(groove_matrix)
+print(groove_matrix.shape)
 
 #both onsets in seconds and beat positions in seconds. i need to map this to a metrical grid assuming 4/4
 # first step - create vector of metrical positions from beat positions - use np.arange?
