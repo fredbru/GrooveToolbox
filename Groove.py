@@ -23,11 +23,9 @@ class NewGroove():
         # extractFeatures - if True (default), extract all features upon groove creation.
         # Set false if you don't need all features - instead retrieve as and when you need them
 
-        np.set_printoptions(precision=2) #todo: put this somewhere else/remove
         self.groove_10_parts = hits_matrix
         self.timing_matrix = timing_matrix
         self.name = name
-
 
         if velocity_type == "None":
             self.groove_10_parts = np.ceil(self.groove_10_parts)

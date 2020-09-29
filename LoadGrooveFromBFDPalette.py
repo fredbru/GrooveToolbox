@@ -6,8 +6,6 @@ import csv
 from fx.bfd.groove import *
 from fx.common.filesystem import *
 
-np.set_printoptions(suppress=True,precision=2)
-
 def get_all_hit_info(hits, groove_len):
     """ Create list of all hits in a groove and relevant information for each
     Format: [quantized time index, velocity, kit piece, microtiming deviation from metronome]

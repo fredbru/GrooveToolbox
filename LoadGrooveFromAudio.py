@@ -6,9 +6,6 @@ from LoadGrooveFromBFDPalette import *
 
 hits_matrix, timing_matrix, tempo = get_groove_from_BFD_palette("Stanton Moore JB.bfd3pal", "JB 7")
 
-#np.set_printoptions(precision=2)
-np.set_printoptions(suppress=True)
-
 tempo_detection = madmom.features.tempo.TempoEstimationProcessor(fps=100)
 beat_detection = madmom.features.beats.BeatTrackingProcessor(fps=100)
 act =  madmom.features.beats.RNNBeatProcessor()('JB 7.wav')
