@@ -103,10 +103,7 @@ def get_groove_from_BFD_palette(filename, groove_name):
     # from extracted hit info.
     # Input = name of palette file + name of groove within that palette you want to use
 
-    path_to_palettes = "Grooves/"
-    palette_filename = filename
-
-    bundle_node = getGrooveBundleNode(parse((path_to_palettes + palette_filename)))
+    bundle_node = getGrooveBundleNode(parse(filename))
     grooveBundle = getGrooveNodes(bundle_node)
 
     all_grooves_hit_info, all_groove_names, tempo = get_grooves_from_bundle(grooveBundle)
@@ -127,13 +124,11 @@ def get_groove_from_BFD_palette(filename, groove_name):
     return hits_matrix, timing_matrix, tempo
 
 def get_all_grooves_from_BFD_palette(filename):
-    path_to_palettes = ""
-    palette_filename = filename
 
     hits_matricies = []
     timing_matricies = []
     names = []
-    bundle_node = getGrooveBundleNode(parse((path_to_palettes + palette_filename)))
+    bundle_node = getGrooveBundleNode(parse(filename))
     grooveBundle = getGrooveNodes(bundle_node)
 
     all_grooves_hit_info, all_groove_names, tempo = get_grooves_from_bundle(grooveBundle)
@@ -154,9 +149,7 @@ def get_all_grooves_from_BFD_palette(filename):
     return hits_matricies, timing_matricies, all_groove_names
 
 def get_groove_list_format(filename, groove_name):
-    path_to_palettes = "Grooves/"
-    palette_filename = filename
-    bundle_node = getGrooveBundleNode(parse((path_to_palettes + palette_filename)))
+    bundle_node = getGrooveBundleNode(parse(filename))
     grooveBundle = getGrooveNodes(bundle_node)
 
     all_grooves_hit_info = []
