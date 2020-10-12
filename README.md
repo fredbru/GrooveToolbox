@@ -7,9 +7,13 @@ The GrooveToolbox is a Python toolbox for analysis and comparison of symbolic dr
 Python version: 3.5.x or 2.7.x
 
 Numpy
+
 Pandas
+
 Scipy
+
 Matplotlib
+
 pretty_midi
 
 ## example.py
