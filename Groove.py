@@ -488,12 +488,7 @@ class RhythmFeatures():
         plt.clf()
         plt.cla()
         plt.close()
-        print(np.nan_to_num(autocorrelation))
         old = np.correlate(part, part, mode='full')
-        print(old.shape)
-        print(np.nan_to_num(autocorrelation).shape)
-
-
         return np.nan_to_num(autocorrelation)
 
     def get_total_autocorrelation_curve(self):
@@ -520,10 +515,7 @@ class RhythmFeatures():
 
     def get_autocorrelation_max_amplitude(self):
         # Get maximum amplitude of autocorrelation curve
-        if self.total_autocorrelation_curve:
-            pass
-        else:
-            self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
+        self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
 
         self.autocorrelation_max_amplitude = self.total_autocorrelation_curve.max()
         return self.autocorrelation_max_amplitude
@@ -532,10 +524,7 @@ class RhythmFeatures():
         # Like spectral centroid - weighted meean of frequencies in the signal, magnitude = weights.
         centroid_sum = 0
         total_weights = 0
-        if self.total_autocorrelation_curve:
-            pass
-        else:
-            self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
+        self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
 
         for i in range(self.total_autocorrelation_curve.shape[0]):
             # half wave rectify
@@ -550,11 +539,8 @@ class RhythmFeatures():
         return self.autocorrelation_centroid
 
     def get_autocorrelation_harmonicity(self):
-        # Autocorrelation Harmonicity - adapted from
-        if self.total_autocorrelation_curve:
-            pass
-        else:
-            self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
+        # Autocorrelation Harmonicity adapted from Lartillot et al. 2008
+        self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
 
         alpha = 0.15
         rectified_autocorrelation = self.total_autocorrelation_curve
