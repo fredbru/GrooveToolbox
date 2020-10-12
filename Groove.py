@@ -140,13 +140,12 @@ class RhythmFeatures():
 
         self.groove_5_parts = groove_5_parts
         self.groove_3_parts = groove_3_parts
-
+        self.total_autocorrelation_curve = None
 
         #todo: Do I want to list names of class variables in here? So user can see them easily?
 
     def calculate_all_features(self):
         # Get all standard features in one go
-        self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
         self.combined_syncopation = self.get_combined_syncopation()
         self.polyphonic_syncopation =self.get_polyphonic_syncopation()
         self.low_syncopation = self.get_low_syncopation()
@@ -462,7 +461,7 @@ class RhythmFeatures():
             self.hisyncness = 0
         return self.hisyncness
 
-    def getComplexity(self, part):
+    def get_complexity_1part(self, part):
         # Get complexity of one part. Calculated following Sioros and Guedes (2011) as combination of denisty and syncopation
         # Uses monophonic syncopation measure
         density = self.get_density(part)
@@ -489,6 +488,11 @@ class RhythmFeatures():
         plt.clf()
         plt.cla()
         plt.close()
+        print(np.nan_to_num(autocorrelation))
+        old = np.correlate(part, part, mode='full')
+        print(old.shape)
+        print(np.nan_to_num(autocorrelation).shape)
+
 
         return np.nan_to_num(autocorrelation)
 
@@ -506,21 +510,32 @@ class RhythmFeatures():
 
     def get_autocorrelation_skew(self):
         # Get skewness of autocorrelation curve
+        if self.total_autocorrelation_curve:
+            pass
+        else:
+            self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
 
         self.autocorrelation_skew = stats.skew(self.total_autocorrelation_curve)
         return self.autocorrelation_skew
 
     def get_autocorrelation_max_amplitude(self):
         # Get maximum amplitude of autocorrelation curve
+        if self.total_autocorrelation_curve:
+            pass
+        else:
+            self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
 
         self.autocorrelation_max_amplitude = self.total_autocorrelation_curve.max()
         return self.autocorrelation_max_amplitude
 
     def get_autocorrelation_centroid(self):
-        #todo: test
         # Like spectral centroid - weighted meean of frequencies in the signal, magnitude = weights.
         centroid_sum = 0
         total_weights = 0
+        if self.total_autocorrelation_curve:
+            pass
+        else:
+            self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
 
         for i in range(self.total_autocorrelation_curve.shape[0]):
             # half wave rectify
@@ -536,7 +551,11 @@ class RhythmFeatures():
 
     def get_autocorrelation_harmonicity(self):
         # Autocorrelation Harmonicity - adapted from
-        # todo: test
+        if self.total_autocorrelation_curve:
+            pass
+        else:
+            self.total_autocorrelation_curve = self.get_total_autocorrelation_curve()
+
         alpha = 0.15
         rectified_autocorrelation = self.total_autocorrelation_curve
         for i in range(self.total_autocorrelation_curve.shape[0]):
@@ -596,19 +615,18 @@ class MicrotimingFeatures():
         # Get all microtiming features.
 
         self.laidbackness = self.laidback_events - self.pushed_events
-        self.timingAccuracy = self.get_timing_accuracy()
-        #todo: this is my timing accuracy feature - fix and implement properly
+        self.timing_accuracy = self.get_timing_accuracy()
 
     def get_all_features(self):
-        #todo: doesn't retrn is_swung or microtiming_event_profile
-        return np.hstack([self.check_if_swung(), self.swing_ratio, self.laidbackness, self.ontopness, self.pushness])
+        #todo: doesn't return tripletness
+        return np.hstack([self.is_swung, self.swingness, self.laidbackness, self.timing_accuracy])
 
     def print_all_features(self):
         print("\n   Microtiming features:")
         print("Swingness = " + str(self.swingness))
         print("Is swung = " + str(self.is_swung))
         print("Laidback-ness  = " + str(self.laidbackness))
-        print("Timing Accuracy  = " + str(self.timingAccuracy))
+        print("Timing Accuracy  = " + str(self.timing_accuracy))
 
     def check_if_swung(self):
         # Check if loop is swung - return 'true' or 'false'
@@ -621,7 +639,8 @@ class MicrotimingFeatures():
         return self.is_swung
 
     def get_swing_ratio(self):
-        return self.swing_ratio
+        #todo: implement
+        pass
 
     def get_swingness(self):
         return self.swingness
@@ -743,9 +762,9 @@ class MicrotimingFeatures():
                 if ~np.isnan(self.average_timing_matrix[i]):
                     nonswing_timing += abs(np.nan_to_num(self.average_timing_matrix[i]))
                     nonswing_note_count += 1
-        self.timingAccuracy = nonswing_timing / float(nonswing_note_count)
+        self.timing_accuracy = nonswing_timing / float(nonswing_note_count)
 
-        return self.timingAccuracy
+        return self.timing_accuracy
 
     def get_average_timing_deviation(self):
         # Get vector of average microtiming deviation at each metrical position
