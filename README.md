@@ -1,4 +1,4 @@
-# GROOVETOOLBOX
+# GrooveToolbox
 
 The GrooveToolbox is a Python toolbox for analysis and comparison of symbolic drum loops, calculating rhythm features, microtiming features and similarity metrics, with functionality for plotting and loading loops from various formats.
 
@@ -52,7 +52,7 @@ from SimilarityMetrics import *
 distance = weightedHammingDistance(GrooveA, GrooveB)
 ```
 ### Loading From Audio
-Using the functions within LoadGrooveFromAudio, it is possible to transcribe audio drum loops to perform analysis upon using the ADTLib open-source library (https://github.com/CarlSouthall/ADTLib). Currently the transcription only works for loops with three parts - kick, snare and hihats. It doesn't differentiate between different sorts of hihat. Also only works for .wav files
+Using the functions within LoadGrooveFromAudio, it is possible to transcribe audio drum loops to perform analysis upon using the ADTLib open-source library (https://github.com/CarlSouthall/ADTLib). Currently the transcription only works for loops with three parts - kick, snare and hihats. It doesn't differentiate between different sorts of hihat and only works for .wav files.
 
 This library has the following additional depencencies:
 madmom
